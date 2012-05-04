@@ -11,6 +11,7 @@ abstract public class LearningSystem {
     protected double explorationRate;
     protected double learningRate;
     protected double discountFactor;
+    protected double[][] qValues;
     protected Random random = new Random();
 
     public LearningSystem(double explorationRate, double learningRate,
@@ -32,7 +33,29 @@ abstract public class LearningSystem {
         this.discountFactor = explorationRate;
     }
 
-    abstract public State move(State state);
+    /**
+     * Learning system execution.
+     * Moves from a given state to a new state, updating Q-values.
+     *
+     * @param stateIndex the index of the current state in the table of Q-values
+     * @param neighbours states to which a move can be made
+     * @return a state into which the learning system chooses to go
+     */
+    protected State move(int stateIndex, Vector<State> neighbours) {
+        int action;
+        if (random.nextDouble() < explorationRate) {
+            action = random.nextInt(neighbours.size());
+        } else {
+            action = greedyAction(qValues[stateIndex], neighbours.size());
+        }
+        State nextState = neighbours.elementAt(action);
+        int nextStateIndex = nextState.toInt();
+        double delta = (discountFactor * qMax(qValues[nextStateIndex])
+                        - qValues[stateIndex][action]
+                        + reward(nextState)) * learningRate;
+        qValues[stateIndex][action] += delta;
+        return nextState;
+    }
 
     /**
      * Greedy choice of an action.
@@ -73,4 +96,12 @@ abstract public class LearningSystem {
         }
         return action;
     }
+
+    /**
+     * Calculate a reward given for a given state.
+     *
+     * @param state a state to evaluate
+     * @return a reward value
+     */
+    abstract protected double reward(State state);
 }

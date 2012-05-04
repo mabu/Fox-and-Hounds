@@ -13,11 +13,10 @@ public class Fox extends LearningSystem {
      * position. Its index is LearningSystem.numStates and the i-th action
      * is to choose i-th column as a starting position.
      */
-    private double[][] qValues = new double[LearningSystem.numStates + 1][4];
-
     public Fox(double explorationRate, double learningRate,
                double discountFactor) {
         super(explorationRate, learningRate, discountFactor);
+        qValues = new double[LearningSystem.numStates + 1][4];
     }
 
     /**
@@ -43,6 +42,20 @@ public class Fox extends LearningSystem {
     }
 
     /**
+     * Initialize the game.
+     * The fox chooses initial position.
+     *
+     * @return initial game state
+     */
+    public State startGame() {
+        Vector<State> neighbours = new Vector<State>();
+        for (int i = 0; i < 4; ++i) {
+            neighbours.add(new State(i));
+        }
+        return super.move(LearningSystem.numStates, neighbours);
+    }
+
+    /**
      * Learning system execution.
      * Moves from a given state to a new state, updating Q-values.
      *
@@ -50,30 +63,22 @@ public class Fox extends LearningSystem {
      * @return a state into which the learning system chooses to go
      */
     public State move(State state) {
-        int stateIndex;
-        Vector<State> neighbours;
-        if (state.isFinal()) {
-            // restart the game – choose starting column
-            stateIndex = LearningSystem.numStates;
-            neighbours = new Vector<State>();
-            for (int i = 0; i < 4; ++i) {
-                neighbours.add(new State(i));
-            }
-        } else {
-            stateIndex = state.toInt();
-            neighbours = state.foxNeighbours(false);
-        }
+        return super.move(state.toInt(), state.foxNeighbours(false));
+    }
 
-        int action;
-        if (random.nextDouble() < explorationRate) {
-            action = random.nextInt(neighbours.size());
+    /**
+     * Calculates a reward given for a given state.
+     *
+     * @param state a state to evaluate
+     * @return a reward value
+     */
+    protected double reward(State state) {
+        if (state.foxWon()) {
+            return 1;
+        } else if (state.houndsWon()) {
+            return -1;
         } else {
-            action = greedyAction(qValues[stateIndex], neighbours.size());
+            return 0;
         }
-        int nextStateIndex = neighbours.elementAt(action).toInt();
-        double delta = (discountFactor * qMax(qValues[nextStateIndex])
-                        - qValues[stateIndex][action]) * learningRate;
-        qValues[stateIndex][action] += delta;
-        return neighbours.elementAt(action);
     }
 }

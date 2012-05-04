@@ -11,11 +11,10 @@ public class Hounds extends LearningSystem {
      * one of up to 2 directions, which gives a maximum of 8 actions from any
      * given state.
      */
-    private double[][] qValues = new double[LearningSystem.numStates][8];
-
     public Hounds(double explorationRate, double learningRate,
                   double discountFactor) {
         super(explorationRate, learningRate, discountFactor);
+        qValues = new double[LearningSystem.numStates][8];
     }
 
     /**
@@ -49,23 +48,27 @@ public class Hounds extends LearningSystem {
      * @return a state into which the learning system chooses to go
      */
     public State move(State state) {
-        int stateIndex = state.toInt();
-        if (state.isFinal()) {
-            // game over – nothing to do; let the fox restart the game
+        Vector<State> neighbours = state.houndsNeighbours(false);
+        if (neighbours.size() == 0) {
+            // FIXME: what to do, if no hound can move?
             return state;
         }
-        Vector<State> neighbours = state.houndsNeighbours(false);
+        return super.move(state.toInt(), neighbours);
+    }
 
-        int action;
-        if (random.nextDouble() < explorationRate) {
-            action = random.nextInt(neighbours.size());
+    /**
+     * Calculates a reward given for a given state.
+     *
+     * @param state a state to evaluate
+     * @return a reward value
+     */
+    protected double reward(State state) {
+        if (state.houndsWon()) {
+            return 1;
+        } else if (state.foxWon()) {
+            return -1;
         } else {
-            action = greedyAction(qValues[stateIndex], neighbours.size());
+            return 0;
         }
-        int nextStateIndex = neighbours.elementAt(action).toInt();
-        double delta = (discountFactor * qMax(qValues[nextStateIndex])
-                        - qValues[stateIndex][action]) * learningRate;
-        qValues[stateIndex][action] += delta;
-        return neighbours.elementAt(action);
     }
 }
