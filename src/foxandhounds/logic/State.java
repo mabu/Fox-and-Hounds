@@ -63,16 +63,12 @@ public class State {
         if (fox.getRow() % 2 == 1) {
             moved = new Coordinates(fox.getRow() + 1, fox.getColumn() + 1);
             if (fox.getColumn() < 3 && !isHoundAt(moved)) {
-                State state = new State(this);
-                state.fox = moved;
-                neighbours.add(state);
+                neighbours.add(moveFox(moved));
             }
         } else {
             moved = new Coordinates(fox.getRow() + 1, fox.getColumn() - 1);
             if (fox.getColumn() > 0 && !isHoundAt(moved)) {
-                State state = new State(this);
-                state.fox = moved;
-                neighbours.add(state);
+                neighbours.add(moveFox(moved));
             }
         }
         // going down
@@ -80,20 +76,28 @@ public class State {
             if (fox.getRow() % 2 == 1) {
                 moved = new Coordinates(fox.getRow() - 1, fox.getColumn() + 1);
                 if (fox.getColumn() < 3 && !isHoundAt(moved)) {
-                    State state = new State(this);
-                    state.fox = moved;
-                    neighbours.add(state);
+                    neighbours.add(moveFox(moved));
                 }
             } else {
                 moved = new Coordinates(fox.getRow() - 1, fox.getColumn() - 1);
                 if (fox.getColumn() > 0 && !isHoundAt(moved)) {
-                    State state = new State(this);
-                    state.fox = moved;
-                    neighbours.add(state);
+                    neighbours.add(moveFox(moved));
                 }
             }
         }
         return neighbours;
+    }
+
+    /**
+     * Creates a new state with fox moved to given coordinates.
+     *
+     * @param coordinates where to move fox
+     * @return a new state with fox moved to given coordinates
+     */
+    private State moveFox(Coordinates coordinates) {
+        State state = new State(this);
+        state.fox = coordinates;
+        return state;
     }
 
     /**
