@@ -53,7 +53,7 @@ public class State {
      * @return a vector of possible states after fox's move.
      */
     public Vector<State> foxNeighbours() {
-        Vector<State> neighbours = new Vector();
+        Vector<State> neighbours = new Vector<State>();
         Coordinates moved;
         // going up
         if (fox.getRow() % 2 == 1) {
@@ -90,7 +90,7 @@ public class State {
      * @return a vector of possible states after hound's move.
      */
     public Vector<State> houndsNeighbours() {
-        Vector<State> neighbours = new Vector();
+        Vector<State> neighbours = new Vector<State>();
         for (int i = 0; i < 4; ++i) {
             Coordinates moved;
             if (hounds[i].getRow() > 0) {
@@ -152,7 +152,7 @@ public class State {
      *
      * @return true if this state represent fox's victory, false otherwise
      */
-    private boolean foxWon() {
+    public boolean foxWon() {
         for (Coordinates hound : hounds) {
             if (hound.getRow() > fox.getRow()) {
                 return false;
@@ -166,7 +166,7 @@ public class State {
      *
      * @return true if this state represent hounds' victory, false otherwise
      */
-    private boolean houndsWon() {
+    public boolean houndsWon() {
         return foxNeighbours().size() == 0;
     }
 
