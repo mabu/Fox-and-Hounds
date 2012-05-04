@@ -193,4 +193,20 @@ public class State {
     public Coordinates[] getHounds() {
         return hounds;
     }
+
+    /**
+     * Encodes state as an int in range [0; 32! / 27! / 4!)
+     *
+     * @return int representing a given state
+     */
+    public int toInt() {
+        int intState = 0;
+        for (int i = 0; i < 4; ++i) {
+            intState *= 32 - i - 1;
+            intState += hounds[i].getRow() * 4 + hounds[i].getColumn() - i;
+        }
+        intState *= 28;
+        intState += fox.getRow() * 4 + fox.getColumn();
+        return intState;
+    }
 }
