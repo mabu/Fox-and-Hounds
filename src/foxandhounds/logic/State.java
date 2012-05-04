@@ -3,6 +3,8 @@
  */
 package foxandhounds.logic;
 
+import java.util.Vector;
+
 public class State {
     /*
      * Position is represented as row (from 0 to 7) and column (from 0 to 3).
@@ -26,12 +28,72 @@ public class State {
     }
 
     /**
+     * Copy constructor.
+     */
+    private State(State state) {
+        fox = new Coordinates(state.fox);
+        for (int i = 0; i < 4; ++i) {
+            hounds[i] = new Coordinates(state.hounds[i]);
+        }
+    }
+
+    /**
      * Checks if a game is already over.
      *
      * @return true, if this is a final state, false otherwise
      */
     public boolean isFinal() {
         return foxWon() || houndsWon();
+    }
+
+    /**
+     * Get neighbour states for fox moves.
+     *
+     * @return a vector of states after all possible fox moves.
+     */
+    public Vector<State> foxNeighbours() {
+        Vector<State> neighbours = new Vector();
+        Coordinates moved = new Coordinates(fox.getRow() - 1, fox.getColumn());
+        if (!isHoundAt(moved)) {
+            State state = new State(this);
+            state.fox = moved;
+            neighbours.add(state);
+        }
+        // going up
+        if (fox.getRow() % 2 == 1) {
+            moved = new Coordinates(fox.getRow() + 1, fox.getColumn() + 1);
+            if (fox.getColumn() < 3 && !isHoundAt(moved)) {
+                State state = new State(this);
+                state.fox = moved;
+                neighbours.add(state);
+            }
+        } else {
+            moved = new Coordinates(fox.getRow() + 1, fox.getColumn() - 1);
+            if (fox.getColumn() > 0 && !isHoundAt(moved)) {
+                State state = new State(this);
+                state.fox = moved;
+                neighbours.add(state);
+            }
+        }
+        // going down
+        if (fox.getRow() > 0) {
+            if (fox.getRow() % 2 == 1) {
+                moved = new Coordinates(fox.getRow() - 1, fox.getColumn() + 1);
+                if (fox.getColumn() < 3 && !isHoundAt(moved)) {
+                    State state = new State(this);
+                    state.fox = moved;
+                    neighbours.add(state);
+                }
+            } else {
+                moved = new Coordinates(fox.getRow() - 1, fox.getColumn() - 1);
+                if (fox.getColumn() > 0 && !isHoundAt(moved)) {
+                    State state = new State(this);
+                    state.fox = moved;
+                    neighbours.add(state);
+                }
+            }
+        }
+        return neighbours;
     }
 
     /**
@@ -54,44 +116,7 @@ public class State {
      * @return true if this state represent hounds' victory, false otherwise
      */
     private boolean houndsWon() {
-        if (fox.getRow() > 6) {
-            return false;
-        }
-        if (!isHoundAt(new Coordinates(fox.getRow() - 1, fox.getColumn()))) {
-            return false;
-        }
-        // going up
-        if (fox.getRow() % 2 == 1) {
-            if (fox.getColumn() < 3
-                && !isHoundAt(new Coordinates(fox.getRow() + 1,
-                                              fox.getColumn() + 1))) {
-                return false;
-            }
-        } else {
-            if (fox.getColumn() > 0
-                && !isHoundAt(new Coordinates(fox.getRow() + 1,
-                                              fox.getColumn() - 1))) {
-                return false;
-            }
-        }
-        if (fox.getRow() == 0) {
-            return true;
-        }
-        // going down
-        if (fox.getRow() % 2 == 1) {
-            if (fox.getColumn() < 3
-                && !isHoundAt(new Coordinates(fox.getRow() - 1,
-                                              fox.getColumn() + 1))) {
-                return false;
-            }
-        } else {
-            if (fox.getColumn() > 0
-                && !isHoundAt(new Coordinates(fox.getRow() - 1,
-                                              fox.getColumn() - 1))) {
-                return false;
-            }
-        }
-        return true;
+        return foxNeighbours().size() == 0;
     }
 
     /**

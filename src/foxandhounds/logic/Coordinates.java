@@ -12,6 +12,11 @@ public class Coordinates {
         this.column = column;
     }
 
+    Coordinates(Coordinates coordinates) {
+        this.row = coordinates.row;
+        this.column = coordinates.column;
+    }
+
     public int getRow() {
         return row;
     }
