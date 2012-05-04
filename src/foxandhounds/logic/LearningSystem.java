@@ -87,6 +87,12 @@ abstract public class LearningSystem {
         return action;
     }
 
+    /**
+     * Returns the index of the largest element of array (of Q-values).
+     *
+     * @param qValues array (of Q-values) to search for the largest value
+     * @return the index of the largest element (Q-value)
+     */
     protected int qMax(double[] qValues) {
         int action = 0;
         for (int i = 1; i < qValues.length; ++i) {
