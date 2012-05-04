@@ -3,9 +3,9 @@ Fox-and-Hounds
 
 A machine learning project to implement Q-learning for a simple board game.
 
-Authors:
-Javad Bakhshi
+Authors:  
+Javad Bakhshi  
 Martynas Budriūnas
 
-Supervisor:
+Supervisor:  
 Olle Gällmo, Dept. of Information Technology, Uppsala University
