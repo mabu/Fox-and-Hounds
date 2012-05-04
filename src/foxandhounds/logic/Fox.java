@@ -42,6 +42,13 @@ public class Fox extends LearningSystem {
         return result;
     }
 
+    /**
+     * Learning system execution.
+     * Moves from a given state to a new state, updating Q-values.
+     *
+     * @param state initial state
+     * @return a state into which the learning system chooses to go
+     */
     public State move(State state) {
         int stateIndex;
         Vector<State> neighbours;

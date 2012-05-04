@@ -13,10 +13,6 @@ public class Hounds extends LearningSystem {
      */
     private double[][] qValues = new double[LearningSystem.numStates][8];
 
-    public State move(State state) {
-        return state;
-    }
-
     public Hounds(double explorationRate, double learningRate,
                   double discountFactor) {
         super(explorationRate, learningRate, discountFactor);
@@ -43,5 +39,33 @@ public class Hounds extends LearningSystem {
             }
         }
         return result;
+    }
+
+    /**
+     * Learning system execution.
+     * Moves from a given state to a new state, updating Q-values.
+     *
+     * @param state initial state
+     * @return a state into which the learning system chooses to go
+     */
+    public State move(State state) {
+        int stateIndex = state.toInt();
+        if (state.isFinal()) {
+            // game over – nothing to do; let the fox restart the game
+            return state;
+        }
+        Vector<State> neighbours = state.houndsNeighbours(false);
+
+        int action;
+        if (random.nextDouble() < explorationRate) {
+            action = random.nextInt() % neighbours.size();
+        } else {
+            action = greedyAction(qValues[stateIndex]);
+        }
+        int nextStateIndex = neighbours.elementAt(action).toInt();
+        double delta = (discountFactor * qMax(qValues[nextStateIndex])
+                        - qValues[stateIndex][action]) * learningRate;
+        qValues[LearningSystem.numStates][action] += delta;
+        return neighbours.elementAt(action);
     }
 }
