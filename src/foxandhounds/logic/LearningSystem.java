@@ -3,11 +3,14 @@
  */
 package foxandhounds.logic;
 
+import java.util.Random;
+
 abstract public class LearningSystem {
+    protected static final int numStates = 32 * 31 * 30 * 29 * 28 / 4 / 3 / 2;
     protected double explorationRate;
     protected double learningRate;
     protected double discountFactor;
-    protected static final int numStates = 32 * 31 * 30 * 29 * 28 / 4 / 3 / 2;
+    protected Random random = new Random();
 
     public LearningSystem(double explorationRate, double learningRate,
                           double discountFactor) {

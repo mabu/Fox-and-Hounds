@@ -3,27 +3,43 @@
  */
 package foxandhounds.logic;
 
-import java.util.Random;
 import java.util.Vector;
 
 public class Fox extends LearningSystem {
     /*
-     * States are encoded using toInt() method. Fox may go to up to 4
-     * directions: up left, up right, down left, down right.
+     * Fox may go to up to 4 directions: up left, up right, down left,
+     * down right.
      * There is also a special state when the fox has not yet chosen its initial
      * position. Its index is LearningSystem.numStates and the i-th action
      * is to choose i-th column as a starting position.
      */
     private double[][] qValues = new double[LearningSystem.numStates + 1][4];
-    private Random random = new Random();
 
     public Fox(double explorationRate, double learningRate,
                double discountFactor) {
         super(explorationRate, learningRate, discountFactor);
     }
 
+    /**
+     * Returns Q-values of given state.
+     * The Q-values are given for fox moves in that order: up left, up right,
+     * down left, down right.
+     *
+     * @param state Q-values of given state will be returned
+     * @return array of Q-values, in the form described above
+     */
     public double[] qValues(State state) {
-        return qValues[state.toInt()];
+        double[] result = new double[4];
+        int stateIndex = state.toInt();
+        Vector<State> neighbours = state.foxNeighbours(true);
+        for (int resultPos = 0, qValuePos = 0; resultPos < 4; ++resultPos) {
+            if (neighbours.elementAt(resultPos) == null) {
+                result[resultPos] = 0;
+            } else {
+                result[resultPos] = qValues[stateIndex][qValuePos++];
+            }
+        }
+        return result;
     }
 
     public State move(State state) {
@@ -38,7 +54,7 @@ public class Fox extends LearningSystem {
             }
         } else {
             stateIndex = state.toInt();
-            neighbours = state.foxNeighbours();
+            neighbours = state.foxNeighbours(false);
         }
 
         int action;

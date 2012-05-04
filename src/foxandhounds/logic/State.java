@@ -50,33 +50,58 @@ public class State {
     /**
      * Get neighbour states for fox's moves.
      *
-     * @return a vector of possible states after fox's move.
+     * @param includeNulls if true, adds null elements for illegal actions, to
+     *                     always return 4 elements
+     * @return a vector of possible states after fox's move, in order: up left,
+     *         up righ, down left, down right
      */
-    public Vector<State> foxNeighbours() {
+    public Vector<State> foxNeighbours(boolean includeNulls) {
         Vector<State> neighbours = new Vector<State>();
         Coordinates moved;
         // going up
-        if (fox.getRow() % 2 == 1) {
-            moved = new Coordinates(fox.getRow() + 1, fox.getColumn() + 1);
-            if (fox.getColumn() < 3 && !isHoundAt(moved)) {
-                neighbours.add(moveFox(moved));
-            }
-        } else {
+        moved = new Coordinates(fox.getRow() + 1, fox.getColumn());
+        State sameColumnState = (isHoundAt(moved) ? null : moveFox(moved));
+        if (fox.getRow() % 2 == 0) {
             moved = new Coordinates(fox.getRow() + 1, fox.getColumn() - 1);
             if (fox.getColumn() > 0 && !isHoundAt(moved)) {
                 neighbours.add(moveFox(moved));
+            } else if (includeNulls) {
+                neighbours.add(null);
+            }
+            if (sameColumnState != null || includeNulls) {
+                neighbours.add(sameColumnState);
+            }
+        } else {
+            if (sameColumnState != null || includeNulls) {
+                neighbours.add(sameColumnState);
+            }
+            moved = new Coordinates(fox.getRow() + 1, fox.getColumn() + 1);
+            if (fox.getColumn() < 3 && !isHoundAt(moved)) {
+                neighbours.add(moveFox(moved));
+            } else if (includeNulls) {
+                neighbours.add(null);
             }
         }
         // going down
+        moved = new Coordinates(fox.getRow() - 1, fox.getColumn());
+        sameColumnState = (isHoundAt(moved) ? null : moveFox(moved));
         if (fox.getRow() > 0) {
-            if (fox.getRow() % 2 == 1) {
-                moved = new Coordinates(fox.getRow() - 1, fox.getColumn() + 1);
-                if (fox.getColumn() < 3 && !isHoundAt(moved)) {
-                    neighbours.add(moveFox(moved));
-                }
-            } else {
+            if (fox.getRow() % 2 == 0) {
                 moved = new Coordinates(fox.getRow() - 1, fox.getColumn() - 1);
                 if (fox.getColumn() > 0 && !isHoundAt(moved)) {
+                    neighbours.add(moveFox(moved));
+                } else if (includeNulls) {
+                    neighbours.add(null);
+                }
+                if (sameColumnState != null || includeNulls) {
+                    neighbours.add(sameColumnState);
+                }
+            } else {
+                if (sameColumnState != null || includeNulls) {
+                    neighbours.add(sameColumnState);
+                }
+                moved = new Coordinates(fox.getRow() - 1, fox.getColumn() + 1);
+                if (fox.getColumn() < 3 && !isHoundAt(moved)) {
                     neighbours.add(moveFox(moved));
                 }
             }
@@ -87,9 +112,11 @@ public class State {
     /**
      * Get neighbour states for hounds' moves.
      *
+     * @param includeNulls if true, adds null elements for illegal actions, to
+     *                     always return 8 elements
      * @return a vector of possible states after hound's move.
      */
-    public Vector<State> houndsNeighbours() {
+    public Vector<State> houndsNeighbours(boolean includeNulls) {
         Vector<State> neighbours = new Vector<State>();
         for (int i = 0; i < 4; ++i) {
             Coordinates moved;
@@ -98,6 +125,8 @@ public class State {
                                         hounds[i].getColumn());
                 if (!isHoundAt(moved) && !moved.equals(fox)) {
                     neighbours.add(moveHound(i, moved));
+                } else if (includeNulls) {
+                    neighbours.add(null);
                 }
                 if (hounds[i].getRow() % 2 == 1) {
                     if (hounds[i].getColumn() < 3) {
@@ -105,6 +134,8 @@ public class State {
                                                 hounds[i].getColumn() + 1);
                         if (!isHoundAt(moved) && !moved.equals(fox)) {
                             neighbours.add(moveHound(i, moved));
+                        } else if (includeNulls) {
+                            neighbours.add(null);
                         }
                     }
                 } else {
@@ -113,9 +144,14 @@ public class State {
                                                 hounds[i].getColumn() - 1);
                         if (!isHoundAt(moved) && !moved.equals(fox)) {
                             neighbours.add(moveHound(i, moved));
+                        } else if (includeNulls) {
+                            neighbours.add(null);
                         }
                     }
                 }
+            } else if (includeNulls) {
+                neighbours.add(null);
+                neighbours.add(null);
             }
         }
         return neighbours;
@@ -167,7 +203,7 @@ public class State {
      * @return true if this state represent hounds' victory, false otherwise
      */
     public boolean houndsWon() {
-        return foxNeighbours().size() == 0;
+        return foxNeighbours(false).size() == 0;
     }
 
     /**
