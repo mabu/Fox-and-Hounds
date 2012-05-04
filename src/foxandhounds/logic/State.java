@@ -230,6 +230,18 @@ public class State {
         return hounds;
     }
 
+    private static int[][] C = new int[33][5]; // number of combinations
+    static {
+        for (int i = 0; i < 33; ++i) {
+            C[i][0] = 1;
+        }
+        for (int i = 1; i < 33; ++i) {
+            for (int j = 1; j < 5; ++j) {
+                C[i][j] = C[i - 1][j - 1] + C[i - 1][j];
+            }
+        }
+    }
+
     /**
      * Encodes state as an int in range [0; 32! / 27! / 4!)
      *
@@ -237,12 +249,13 @@ public class State {
      */
     public int toInt() {
         int intState = 0;
+        int foxCoordinate = fox.getRow() * 4 + fox.getColumn();
         for (int i = 0; i < 4; ++i) {
-            intState *= 32 - i - 1;
-            intState += hounds[i].getRow() * 4 + hounds[i].getColumn() - i;
+            intState += C[hounds[i].getRow() * 4 + hounds[i].getColumn()][3 - i];
+            if (fox.compareTo(hounds[i]) > 0) {
+                --foxCoordinate;
+            }
         }
-        intState *= 28;
-        intState += fox.getRow() * 4 + fox.getColumn();
-        return intState;
+        return intState * 28 + foxCoordinate;
     }
 }

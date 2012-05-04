@@ -58,14 +58,14 @@ public class Hounds extends LearningSystem {
 
         int action;
         if (random.nextDouble() < explorationRate) {
-            action = random.nextInt() % neighbours.size();
+            action = random.nextInt(neighbours.size());
         } else {
-            action = greedyAction(qValues[stateIndex]);
+            action = greedyAction(qValues[stateIndex], neighbours.size());
         }
         int nextStateIndex = neighbours.elementAt(action).toInt();
         double delta = (discountFactor * qMax(qValues[nextStateIndex])
                         - qValues[stateIndex][action]) * learningRate;
-        qValues[LearningSystem.numStates][action] += delta;
+        qValues[stateIndex][action] += delta;
         return neighbours.elementAt(action);
     }
 }
