@@ -4,6 +4,7 @@
 package foxandhounds.logic;
 
 import java.util.Vector;
+import java.util.Arrays;
 
 public class State {
     /*
@@ -47,18 +48,13 @@ public class State {
     }
 
     /**
-     * Get neighbour states for fox moves.
+     * Get neighbour states for fox's moves.
      *
-     * @return a vector of states after all possible fox moves.
+     * @return a vector of possible states after fox's move.
      */
     public Vector<State> foxNeighbours() {
         Vector<State> neighbours = new Vector();
-        Coordinates moved = new Coordinates(fox.getRow() - 1, fox.getColumn());
-        if (!isHoundAt(moved)) {
-            State state = new State(this);
-            state.fox = moved;
-            neighbours.add(state);
-        }
+        Coordinates moved;
         // going up
         if (fox.getRow() % 2 == 1) {
             moved = new Coordinates(fox.getRow() + 1, fox.getColumn() + 1);
@@ -89,6 +85,43 @@ public class State {
     }
 
     /**
+     * Get neighbour states for hounds' moves.
+     *
+     * @return a vector of possible states after hound's move.
+     */
+    public Vector<State> houndsNeighbours() {
+        Vector<State> neighbours = new Vector();
+        for (int i = 0; i < 4; ++i) {
+            Coordinates moved;
+            if (hounds[i].getRow() > 0) {
+                moved = new Coordinates(hounds[i].getRow() - 1,
+                                        hounds[i].getColumn());
+                if (!isHoundAt(moved) && !moved.equals(fox)) {
+                    neighbours.add(moveHound(i, moved));
+                }
+                if (hounds[i].getRow() % 2 == 1) {
+                    if (hounds[i].getColumn() < 3) {
+                        moved = new Coordinates(hounds[i].getRow() - 1,
+                                                hounds[i].getColumn() + 1);
+                        if (!isHoundAt(moved) && !moved.equals(fox)) {
+                            neighbours.add(moveHound(i, moved));
+                        }
+                    }
+                } else {
+                    if (hounds[i].getColumn() > 0) {
+                        moved = new Coordinates(hounds[i].getRow() - 1,
+                                                hounds[i].getColumn() - 1);
+                        if (!isHoundAt(moved) && !moved.equals(fox)) {
+                            neighbours.add(moveHound(i, moved));
+                        }
+                    }
+                }
+            }
+        }
+        return neighbours;
+    }
+
+    /**
      * Creates a new state with fox moved to given coordinates.
      *
      * @param coordinates where to move fox
@@ -97,6 +130,20 @@ public class State {
     private State moveFox(Coordinates coordinates) {
         State state = new State(this);
         state.fox = coordinates;
+        return state;
+    }
+
+    /**
+     * Creates a new state with a hound moved to given coordinates.
+     *
+     * @param houndIndex which hound to move ([0, 3])
+     * @param coordinates where to move the hound
+     * @return a new state with fox moved to given coordinates
+     */
+    private State moveHound(int houndIndex, Coordinates coordinates) {
+        State state = new State(this);
+        state.hounds[houndIndex] = coordinates;
+        Arrays.sort(state.hounds);
         return state;
     }
 

@@ -3,7 +3,7 @@
  */
 package foxandhounds.logic;
 
-public class Coordinates {
+public class Coordinates implements Comparable {
     int row, column;
 
     Coordinates(int row, int column) {
@@ -27,5 +27,14 @@ public class Coordinates {
 
     public boolean equals(Coordinates other) {
         return other.row == row && other.column == column;
+    }
+
+    public int compareTo(Object o) {
+        Coordinates coordinates = (Coordinates) o;
+        if (column == coordinates.column) {
+            return row - coordinates.row;
+        } else {
+            return column - coordinates.column;
+        }
     }
 }
