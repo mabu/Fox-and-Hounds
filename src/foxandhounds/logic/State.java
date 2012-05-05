@@ -272,7 +272,7 @@ public class State {
         int intState = 0;
         int foxCoordinate = fox.getRow() * 4 + fox.getColumn();
         for (int i = 0; i < 4; ++i) {
-            intState += C[hounds[i].getRow() * 4 + hounds[i].getColumn()][3 - i];
+            intState += C[hounds[i].getRow() * 4 + hounds[i].getColumn()][i + 1];
             if (fox.compareTo(hounds[i]) > 0) {
                 --foxCoordinate;
             }
