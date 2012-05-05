@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package foxandhounds.GUI;
+package foxandhounds.gui;
 
 
 import java.awt.Color;

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package foxandhounds.GUI;
+package foxandhounds.gui;
 
 import java.awt.FontFormatException;
 import java.io.IOException;
@@ -23,7 +23,6 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
-            // TODO code application logic here
             MainFrame frame = new MainFrame();
         } catch (ParseException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
