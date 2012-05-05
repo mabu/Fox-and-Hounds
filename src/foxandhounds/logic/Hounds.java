@@ -14,7 +14,7 @@ public class Hounds extends LearningSystem {
     public Hounds(double explorationRate, double learningRate,
                   double discountFactor) {
         super(explorationRate, learningRate, discountFactor);
-        qValues = new double[LearningSystem.numStates][8];
+        qValues = new double[State.NUM_STATES][8];
     }
 
     /**
@@ -40,20 +40,8 @@ public class Hounds extends LearningSystem {
         return result;
     }
 
-    /**
-     * Learning system execution.
-     * Moves from a given state to a new state, updating Q-values.
-     *
-     * @param state initial state
-     * @return a state into which the learning system chooses to go
-     */
-    public State move(State state) {
-        Vector<State> neighbours = state.houndsNeighbours(false);
-        if (neighbours.size() == 0) {
-            // FIXME: what to do, if no hound can move?
-            return state;
-        }
-        return super.move(state.toInt(), neighbours);
+    protected Vector<State> neighbours(State state) {
+        return state.houndsNeighbours(false);
     }
 
     /**

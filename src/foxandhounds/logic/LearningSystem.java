@@ -7,11 +7,12 @@ import java.util.Random;
 import java.util.Vector;
 
 abstract public class LearningSystem {
-    protected static final int numStates = 32 * 31 * 30 * 29 * 28 / 4 / 3 / 2;
     protected double explorationRate;
     protected double learningRate;
     protected double discountFactor;
     protected double[][] qValues;
+    protected int previousStateIndex = -1;
+    protected int lastAction;
     protected Random random = new Random();
 
     public LearningSystem(double explorationRate, double learningRate,
@@ -35,27 +36,46 @@ abstract public class LearningSystem {
 
     /**
      * Learning system execution.
-     * Moves from a given state to a new state, updating Q-values.
+     * Moves from a given state to a new state.
+     * Updates Q-values of previous move.
      *
-     * @param stateIndex the index of the current state in the table of Q-values
-     * @param neighbours states to which a move can be made
+     * @param state current state before move
      * @return a state into which the learning system chooses to go
      */
-    protected State move(int stateIndex, Vector<State> neighbours) {
-        int action;
-        if (random.nextDouble() < explorationRate) {
-            action = random.nextInt(neighbours.size());
-        } else {
-            action = greedyAction(qValues[stateIndex], neighbours.size());
+    public State move(State state) {
+        Vector<State> neighbours = neighbours(state);
+        if (neighbours.size() == 0) {
+            // FIXME: what to do, if no hound can move?
+            return state;
         }
-        State nextState = neighbours.elementAt(action);
-        int nextStateIndex = nextState.toInt();
-        double delta = (discountFactor * qMax(qValues[nextStateIndex])
-                        - qValues[stateIndex][action]
-                        + reward(nextState)) * learningRate;
-        qValues[stateIndex][action] += delta;
-        return nextState;
+        int stateIndex = state.toInt();
+        if (previousStateIndex >= 0) {
+            double delta = (discountFactor * max(qValues[stateIndex],
+                                                 neighbours.size())
+                            - qValues[previousStateIndex][lastAction]
+                            + reward(state)) * learningRate;
+            qValues[previousStateIndex][lastAction] += delta;
+        }
+        if (state.isFinal()) {
+            previousStateIndex = -1;
+            return state;
+        }
+        previousStateIndex = stateIndex;
+        if (random.nextDouble() < explorationRate) {
+            lastAction = random.nextInt(neighbours.size());
+        } else {
+            lastAction = greedyAction(qValues[stateIndex], neighbours.size());
+        }
+        return neighbours.elementAt(lastAction);
     }
+
+    /**
+     * Returns states reachable from a given state.
+     *
+     * @param state current state
+     * @return states reachable from a given state
+     */
+    abstract protected Vector<State> neighbours(State state);
 
     /**
      * Greedy choice of an action.
@@ -88,19 +108,20 @@ abstract public class LearningSystem {
     }
 
     /**
-     * Returns the index of the largest element of array (of Q-values).
+     * Returns the largest element of a given size prefix of an array.
      *
-     * @param qValues array (of Q-values) to search for the largest value
-     * @return the index of the largest element (Q-value)
+     * @param array array in which to search for the largest value
+     * @param size how many array elements to consider
+     * @return the largest value
      */
-    protected int qMax(double[] qValues) {
-        int action = 0;
-        for (int i = 1; i < qValues.length; ++i) {
-            if (qValues[i] < qValues[action]) {
-                action = i;
+    private double max(double[] array, int size) {
+        double largest = array[0];
+        for (int i = 0; i < size; ++i) {
+            if (largest < array[i]) {
+                largest = array[i];
             }
         }
-        return action;
+        return largest;
     }
 
     /**
