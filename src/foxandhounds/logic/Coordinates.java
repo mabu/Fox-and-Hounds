@@ -31,10 +31,10 @@ public class Coordinates implements Comparable {
 
     public int compareTo(Object o) {
         Coordinates coordinates = (Coordinates) o;
-        if (column == coordinates.column) {
-            return row - coordinates.row;
-        } else {
+        if (row == coordinates.row) {
             return column - coordinates.column;
+        } else {
+            return row - coordinates.row;
         }
     }
 }

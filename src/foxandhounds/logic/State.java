@@ -13,18 +13,27 @@ public class State {
      * row 7.
      */
 
-    private Coordinates fox;
+    public static final int NUM_STATES = 32 * 31 * 30 * 29 * 28 / 4 / 3 / 2 + 1;
+
+    private Coordinates fox = null;
     private Coordinates[] hounds = new Coordinates[4];
 
     /**
      * Initial game state.
-     *
-     * @param foxColumn column for initial fox position (between 0 and 3)
+     * Fox not on the board yet.
      */
-    public State(int foxColumn) {
+    public State() {
         for (int i = 0; i < 4; ++i) {
             hounds[i] = new Coordinates(7, i);
         }
+    }
+
+    /**
+     * Initial game state.
+     * @param foxColumn column for initial fox position (between 0 and 3)
+     */
+    public State(int foxColumn) {
+        this();
         fox = new Coordinates(0, foxColumn);
     }
 
@@ -57,6 +66,12 @@ public class State {
      */
     public Vector<State> foxNeighbours(boolean includeNulls) {
         Vector<State> neighbours = new Vector<State>();
+        if (fox == null) {
+            for (int i = 0; i < 4; ++i) {
+                neighbours.add(new State(i));
+            }
+            return neighbours;
+        }
         Coordinates moved;
         // going up
         moved = new Coordinates(fox.getRow() + 1, fox.getColumn());
@@ -189,6 +204,9 @@ public class State {
      * @return true if this state represent fox's victory, false otherwise
      */
     public boolean foxWon() {
+        if (fox == null) {
+            return false;
+        }
         for (Coordinates hound : hounds) {
             if (hound.getRow() > fox.getRow()) {
                 return false;
@@ -230,19 +248,35 @@ public class State {
         return hounds;
     }
 
+    private static int[][] C = new int[33][5]; // number of combinations
+    static {
+        for (int i = 0; i < 33; ++i) {
+            C[i][0] = 1;
+        }
+        for (int i = 1; i < 33; ++i) {
+            for (int j = 1; j < 5; ++j) {
+                C[i][j] = C[i - 1][j - 1] + C[i - 1][j];
+            }
+        }
+    }
+
     /**
-     * Encodes state as an int in range [0; 32! / 27! / 4!)
+     * Encodes state as an int in range [0; 32! / 27! / 4!]
      *
      * @return int representing a given state
      */
     public int toInt() {
-        int intState = 0;
-        for (int i = 0; i < 4; ++i) {
-            intState *= 32 - i - 1;
-            intState += hounds[i].getRow() * 4 + hounds[i].getColumn() - i;
+        if (fox == null) {
+            return NUM_STATES - 1;
         }
-        intState *= 28;
-        intState += fox.getRow() * 4 + fox.getColumn();
-        return intState;
+        int intState = 0;
+        int foxCoordinate = fox.getRow() * 4 + fox.getColumn();
+        for (int i = 0; i < 4; ++i) {
+            intState += C[hounds[i].getRow() * 4 + hounds[i].getColumn()][3 - i];
+            if (fox.compareTo(hounds[i]) > 0) {
+                --foxCoordinate;
+            }
+        }
+        return intState * 28 + foxCoordinate;
     }
 }

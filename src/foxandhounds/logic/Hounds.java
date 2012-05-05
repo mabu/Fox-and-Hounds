@@ -11,15 +11,10 @@ public class Hounds extends LearningSystem {
      * one of up to 2 directions, which gives a maximum of 8 actions from any
      * given state.
      */
-    private double[][] qValues = new double[LearningSystem.numStates][8];
-
-    public State move(State state) {
-        return state;
-    }
-
     public Hounds(double explorationRate, double learningRate,
                   double discountFactor) {
         super(explorationRate, learningRate, discountFactor);
+        qValues = new double[State.NUM_STATES][8];
     }
 
     /**
@@ -43,5 +38,25 @@ public class Hounds extends LearningSystem {
             }
         }
         return result;
+    }
+
+    protected Vector<State> neighbours(State state) {
+        return state.houndsNeighbours(false);
+    }
+
+    /**
+     * Calculates a reward given for a given state.
+     *
+     * @param state a state to evaluate
+     * @return a reward value
+     */
+    protected double reward(State state) {
+        if (state.houndsWon()) {
+            return 1;
+        } else if (state.foxWon()) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }

@@ -4,12 +4,15 @@
 package foxandhounds.logic;
 
 import java.util.Random;
+import java.util.Vector;
 
 abstract public class LearningSystem {
-    protected static final int numStates = 32 * 31 * 30 * 29 * 28 / 4 / 3 / 2;
     protected double explorationRate;
     protected double learningRate;
     protected double discountFactor;
+    protected double[][] qValues;
+    protected int previousStateIndex = -1;
+    protected int lastAction;
     protected Random random = new Random();
 
     public LearningSystem(double explorationRate, double learningRate,
@@ -31,25 +34,101 @@ abstract public class LearningSystem {
         this.discountFactor = explorationRate;
     }
 
-    abstract public State move(State state);
+    /**
+     * Learning system execution.
+     * Moves from a given state to a new state.
+     * Updates Q-values of previous move.
+     *
+     * @param state current state before move
+     * @return a state into which the learning system chooses to go
+     */
+    public State move(State state) {
+        Vector<State> neighbours = neighbours(state);
+        if (neighbours.size() == 0) {
+            // FIXME: what to do, if no hound can move?
+            return state;
+        }
+        int stateIndex = state.toInt();
+        if (previousStateIndex >= 0) {
+            double delta = (discountFactor * max(qValues[stateIndex],
+                                                 neighbours.size())
+                            - qValues[previousStateIndex][lastAction]
+                            + reward(state)) * learningRate;
+            qValues[previousStateIndex][lastAction] += delta;
+        }
+        if (state.isFinal()) {
+            previousStateIndex = -1;
+            return state;
+        }
+        previousStateIndex = stateIndex;
+        if (random.nextDouble() < explorationRate) {
+            lastAction = random.nextInt(neighbours.size());
+        } else {
+            lastAction = greedyAction(qValues[stateIndex], neighbours.size());
+        }
+        return neighbours.elementAt(lastAction);
+    }
 
-    protected int greedyAction(double[] qValues) {
-        int action = 0;
-        for (int i = 1; i < qValues.length; ++i) {
-            if (qValues[i] < qValues[action]) {
-                action = i;
+    /**
+     * Returns states reachable from a given state.
+     *
+     * @param state current state
+     * @return states reachable from a given state
+     */
+    abstract protected Vector<State> neighbours(State state);
+
+    /**
+     * Greedy choice of an action.
+     *
+     * @param qValues array of Q-values to choose from
+     * @param size    only consider Q-values with indices from 0 to size - 1
+     * @return index of the largest element of a given size prefix of qValues;
+     *         if there are more than one largest value, chooses one of them
+     *         randomly
+     */
+    protected int greedyAction(double[] qValues, int size) {
+        double max = qValues[0]; // largest Q-value found so far
+        int actions = 1;         // how many actions with largest Q-value
+        for (int i = 1; i < size; ++i) {
+            if (max < qValues[i]) {
+                max = qValues[i];
+                actions = 1;
+            } else if (max == qValues[i]) {
+                ++actions;
+            }
+        }
+        int which = 1 + random.nextInt(actions);
+        int action = -1;
+        while (which > 0) {
+            if (qValues[++action] == max) {
+                --which;
             }
         }
         return action;
     }
 
-    protected int qMax(double[] qValues) {
-        int action = 0;
-        for (int i = 1; i < qValues.length; ++i) {
-            if (qValues[i] < qValues[action]) {
-                action = i;
+    /**
+     * Returns the largest element of a given size prefix of an array.
+     *
+     * @param array array in which to search for the largest value
+     * @param size how many array elements to consider
+     * @return the largest value
+     */
+    private double max(double[] array, int size) {
+        double largest = array[0];
+        for (int i = 0; i < size; ++i) {
+            if (largest < array[i]) {
+                largest = array[i];
             }
         }
-        return action;
+        return largest;
     }
+
+    /**
+     * Calculate a reward given for a given state.
+     *
+     * @param state a state to evaluate
+     * @return a reward value
+     */
+    abstract protected double reward(State state);
 }
