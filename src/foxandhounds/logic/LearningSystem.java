@@ -36,11 +36,13 @@ abstract public class LearningSystem {
 
     /**
      * Learning system execution.
-     * Moves from a given state to a new state.
      * Updates Q-values of previous move.
+     * If the given state is not final, moves to a new state, otherwise only
+     * updates the Q-value of previous move and gets ready for a new game.
      *
      * @param state current state before move
-     * @return a state into which the learning system chooses to go
+     * @return a state into which the learning system chooses to go, or the same
+     *         state if it was final
      */
     public State move(State state) {
         Vector<State> neighbours = neighbours(state);
