@@ -34,11 +34,11 @@ public class MainFrame extends JFrame {
      this.setTitle("Board");
      this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
      Board b = new Board();
-     Fox F = new Fox("src/Image/fox-icon.jpg",8,3,Color.BLACK);
-     Hound H1 = new Hound("src/Image/dog-icon.jpg",1,2,Color.BLACK);
-     Hound H2 = new Hound("src/Image/dog-icon.jpg",1,4,Color.BLACK);
-     Hound H3 = new Hound("src/Image/dog-icon.jpg",1,6,Color.BLACK);
-     Hound H4 = new Hound("src/Image/dog-icon.jpg",1,8,Color.BLACK);
+     Fox F = new Fox("src/foxandhounds/Image/fox-icon.jpg",8,3,Color.BLACK);
+     Hound H1 = new Hound("src/foxandhounds/Image/dog-icon.jpg",1,2,Color.BLACK);
+     Hound H2 = new Hound("src/foxandhounds/Image/dog-icon.jpg",1,4,Color.BLACK);
+     Hound H3 = new Hound("src/foxandhounds/Image/dog-icon.jpg",1,6,Color.BLACK);
+     Hound H4 = new Hound("src/foxandhounds/Image/dog-icon.jpg",1,8,Color.BLACK);
      b.addFox(F, idByXY(F.getXCor(),F.getYCor()));
      b.addHound(H1,  idByXY(H1.getXCor(),H1.getYCor()));
      b.addHound(H2,  idByXY(H2.getXCor(),H2.getYCor()));
