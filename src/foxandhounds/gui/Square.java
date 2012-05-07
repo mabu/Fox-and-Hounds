@@ -17,8 +17,8 @@ public class Square extends JPanel{
     
     private int x;
     private int y;
-    private Fox F ;
-    private Hound H;
+    private GFox F ;
+    private GHound H;
     //private Color BG;
     public Square(int X, int Y){
         x=X;
@@ -38,19 +38,19 @@ public class Square extends JPanel{
     public void setYCor(int Y){
         y=Y;
     }
-    public void addFox(Fox newF){
+    public void addFox(GFox newF){
         F=newF;
         this.add(F);
 
         
     }
-    public void addHound(Hound newH){
+    public void addHound(GHound newH){
         H=newH;
     }
-    public Fox getFox(){
+    public GFox getFox(){
         return F;
     }
-    public Hound getHound(){
+    public GHound getHound(){
         return H;
     }
 

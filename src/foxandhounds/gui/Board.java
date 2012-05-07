@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  */
 public class Board extends JPanel{
 
-    Board(){
+     Board(){
        initBoard();
     }
     private void initBoard(){
@@ -53,17 +53,17 @@ public class Board extends JPanel{
         //s.getXCor();
         return s;
     }
-    public void addFox(Fox F, int squareId){
+    public void addFox(GFox F, int squareId){
         //System.out.print(squareId);
         Square s = getSquareById(squareId);
         s.add(F);
         //repaint();
         //this.add(F);
     }
-     public void addHound(Hound H, int squareId){
+     public void addHound(GHound H, int squareId){
         Square s = getSquareById(squareId);
         s.add(H);
         //this.add(F);
     }
-
+    
 }
