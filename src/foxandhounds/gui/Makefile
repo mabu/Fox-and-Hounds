@@ -2,8 +2,8 @@ PACKAGE = foxandhounds.gui
 
 SOURCE  = \
 	Board.java \
-	Fox.java \
-	Hound.java \
+	GFox.java \
+	GHound.java \
 	MainFrame.java \
 	Main.java \
 	Square.java \
