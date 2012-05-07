@@ -40,6 +40,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
         JPanel info = new JPanel();
         JPanel boardPanel = new JPanel();
+        this.setSize(800,800);
         this.setVisible(true);
         this.setTitle("Board");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
