@@ -22,13 +22,15 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author Javad
  */
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements ActionListener {
 
     private State state;
     private Fox fox = new Fox(0.1, 0.1, 0.95);
-    private GFox F;
-    private GHound[] H = new GHound[4];
+    private Piece F;
+    private Piece[] H = new Piece[4];
     private Hounds hounds = new Hounds(0.1, 0.1, 0.95);
+    private Board board = new Board();
+    private boolean foxTurn = true;
 
     public MainFrame() throws ParseException, IllegalAccessException, InstantiationException, ClassNotFoundException, IOException, FontFormatException, UnsupportedLookAndFeelException {
         initUI();
@@ -38,73 +40,56 @@ public class MainFrame extends JFrame {
 
         JPanel info = new JPanel();
         JPanel boardPanel = new JPanel();
-        this.setSize(600, 650);
-        this.setLocation(0, 0);
         this.setVisible(true);
-        final Board b = new Board();
         this.setTitle("Board");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         state = fox.startGame();
-        Coordinates foxCoordinates = state.getFox();
-        F = new GFox("src/foxandhounds/Image/fox-icon.jpg",
-                foxCoordinates.getRow(),
-                foxCoordinates.getColumn(), Color.BLACK);
-        Coordinates[] houndsCoordinates = state.getHounds();
+        F = new Piece("src/foxandhounds/Image/fox-icon.jpg");
         for (int i = 0; i < 4; ++i) {
-            H[i] = new GHound("src/foxandhounds/Image/dog-icon.jpg",
-                    houndsCoordinates[i].getRow(),
-                    houndsCoordinates[i].getColumn(), Color.BLACK);
-            b.addHound(H[i], idByXY(H[i].getXCor(), H[i].getYCor()));
+            H[i] = new Piece("src/foxandhounds/Image/dog-icon.jpg");
         }
 
-        b.addFox(F, idByXY(F.getXCor(), F.getYCor()));
-
-        boardPanel.add(b);
+        boardPanel.add(board);
         Button step = new Button("Next Step");
 
-        step.addActionListener(new ActionListener() {
-
-            boolean foxTurn = true;
-
-            public void actionPerformed(ActionEvent e) {
-                //System.out.println();
-                if (foxTurn) {
-                    state = fox.move(state);
-                } else {
-                    state = hounds.move(state);
-                }
-                if (state.isFinal()) {
-                    // update final Q-values and restart the game
-                    hounds.move(state);
-                    fox.move(state);
-                    state = fox.startGame();
-                    foxTurn = false;
-                }
-                Coordinates foxCoordinates = state.getFox();
-                F.setPos(foxCoordinates.getColumn(), foxCoordinates.getRow());
-                b.addFox(F, idByXY(F.getXCor(), F.getYCor()));
-                Coordinates[] houndsCoordinates = state.getHounds();
-                for (int i = 0; i < 4; ++i) {
-                    H[i].setPos(houndsCoordinates[i].getColumn(),
-                            houndsCoordinates[i].getRow());
-                    b.addHound(H[i], idByXY(H[i].getXCor(), H[i].getYCor()));
-                }
-                foxTurn = !foxTurn;
-                b.repaint();
-            }
-        });
+        step.addActionListener(this);
         info.add(step);
         this.setLayout(new FlowLayout());
         this.add(boardPanel);
         this.add(info);
         this.repaint();
-
+        showState();
     }
 
-    public int idByXY(int col, int row) {
+    private int idByCoordinates(Coordinates coordinates) {
+        int row = coordinates.getRow();
+        return (7 - row) * 8 + coordinates.getColumn() * 2 + row % 2;
+    }
 
-        return (7 - row) * 8 + col * 2 + row % 2;
+    private void showState() {
+        board.addPiece(F, idByCoordinates(state.getFox()));
+        Coordinates[] houndsCoordinates = state.getHounds();
+        for (int i = 0; i < 4; ++i) {
+            board.addPiece(H[i], idByCoordinates(houndsCoordinates[i]));
+        }
+        board.repaint();
+    }
 
+    public void actionPerformed(ActionEvent e) {
+        if (foxTurn) {
+            state = fox.move(state);
+        } else {
+            state = hounds.move(state);
+        }
+        if (state.isFinal()) {
+            // update final Q-values and restart the game
+            hounds.move(state);
+            fox.move(state);
+            state = fox.startGame();
+            foxTurn = false;
+        }
+        showState();
+        foxTurn = !foxTurn;
     }
 }

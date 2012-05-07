@@ -2,11 +2,9 @@ PACKAGE = foxandhounds.gui
 
 SOURCE  = \
 	Board.java \
-	GFox.java \
-	GHound.java \
+	Piece.java \
 	MainFrame.java \
 	Main.java \
-	Square.java \
 
 RMI_SOURCE =
 

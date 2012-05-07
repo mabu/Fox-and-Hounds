@@ -14,56 +14,22 @@ import javax.swing.JPanel;
  *
  * @author Javad
  */
-public class Board extends JPanel{
-
-     Board(){
-       initBoard();
-    }
-    private void initBoard(){
-        this.setLayout(new GridLayout(8,8));
-        boolean oddRow= true;
-
-        for(int i =1; i<=64; i++ ){
-            Square l = new Square(i,i/8);
-            //l.add(new Hound());
-            l.setOpaque(true);
-            if((i/8)%2==0)
-                oddRow=false;
-            else
-                oddRow=true;
-            if (i%8==0)
-                oddRow=!oddRow;
-            if(oddRow)
-                if ((i%2)==0)
-                    l.setBackground(Color.WHITE);
-
-                else
-                    l.setBackground(Color.BLACK);
-            else
-                if ((i%2)==0)
-                    l.setBackground(Color.BLACK);
-                else
-                    l.setBackground(Color.WHITE);
-            this.add(l);
-            //System.out.println(this.getComponent(i-1));
+public class Board extends JPanel {
+    Board() {
+        setLayout(new GridLayout(8, 8));
+        for(int i = 0; i < 64; i++) {
+            JPanel square = new JPanel();
+            if ((i / 8 + i) % 2 == 1) {
+                square.setBackground(Color.BLACK);
+            } else {
+                square.setBackground(Color.WHITE);
+            }
+            add(square);
         }
     }
-    public Square getSquareById(int i){
-        Square s = (Square)this.getComponent(i);
-        //s.getXCor();
-        return s;
+
+    public void addPiece(Piece piece, int squareId) {
+        ((JPanel)getComponent(squareId)).add(piece);
     }
-    public void addFox(GFox F, int squareId){
-        //System.out.print(squareId);
-        Square s = getSquareById(squareId);
-        s.add(F);
-        //repaint();
-        //this.add(F);
-    }
-     public void addHound(GHound H, int squareId){
-        Square s = getSquareById(squareId);
-        s.add(H);
-        //this.add(F);
-    }
-    
+
 }
