@@ -4,6 +4,7 @@ import foxandhounds.logic.Coordinates;
 import foxandhounds.logic.Fox;
 import foxandhounds.logic.Hounds;
 import foxandhounds.logic.State;
+import foxandhounds.logic.Play;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,13 +21,12 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class MainFrame extends JFrame implements ActionListener {
 
-    private State state;
     private Fox fox = new Fox(0.1, 0.1, 0.95);
     private Piece F;
     private Piece[] H = new Piece[4];
     private Hounds hounds = new Hounds(0.1, 0.1, 0.95);
     private Board board = new Board();
-    private boolean foxTurn = true;
+    private Play play = new Play(fox, hounds);
 
     public MainFrame() throws ParseException, IllegalAccessException, InstantiationException, ClassNotFoundException, IOException, FontFormatException, UnsupportedLookAndFeelException {
         initUI();
@@ -40,7 +40,6 @@ public class MainFrame extends JFrame implements ActionListener {
         this.setSize(800,800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        state = fox.startGame();
         F = new Piece("src/foxandhounds/Image/fox-icon.jpg");
         for (int i = 0; i < 4; ++i) {
             H[i] = new Piece("src/foxandhounds/Image/dog-icon.jpg");
@@ -66,6 +65,7 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void showState() {
+        State state = play.getState();
         board.addPiece(F, idByCoordinates(state.getFox()));
         Coordinates[] houndsCoordinates = state.getHounds();
         for (int i = 0; i < 4; ++i) {
@@ -75,19 +75,7 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (foxTurn) {
-            state = fox.move(state);
-        } else {
-            state = hounds.move(state);
-        }
-        if (state.isFinal()) {
-            // update final Q-values and restart the game
-            hounds.move(state);
-            fox.move(state);
-            state = fox.startGame();
-            foxTurn = false;
-        }
+        play.step();
         showState();
-        foxTurn = !foxTurn;
     }
 }
