@@ -237,7 +237,7 @@ buildall : $(PLIST_BUILD)
 
 # Rule 19. Create given jar file by invoking its Makefile which triggers rule 18
 %.jar :
-	$(MAKE) -k -f $(patsubst %,$(JAR_DIR)/Makefile.%,$@) [EMAIL PROTECTED]
+	$(MAKE) -k -f $(patsubst %,$(JAR_DIR)/Makefile.%,$@) $@.JAR
 
 
 # Rule 20. Create all jar files by invoking rule 19

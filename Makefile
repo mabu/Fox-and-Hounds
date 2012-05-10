@@ -5,12 +5,13 @@ PACKAGES = \
 NODOC_PACKAGES = \
 
 JARS = \
+        foxandhounds.jar
 
 JARS_3RDPARTY = \
 
 MAIN_CLASS     = Main
 MAIN_PACKAGE   = foxandhounds.gui
-MAIN_JAR       = 
+MAIN_JAR       = foxandhounds.jar
 
 RUN_PARAMETERS = 
 

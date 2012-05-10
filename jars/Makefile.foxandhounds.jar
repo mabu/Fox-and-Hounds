@@ -1,0 +1,7 @@
+JAR_CONTENT = \
+       foxandhounds \
+
+MANIFEST = Manifest.foxandhounds.jar
+
+include $(JAVA_DEV_ROOT)/Makefile
+
