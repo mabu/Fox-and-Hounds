@@ -36,9 +36,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
         JPanel info = new JPanel();
         JPanel boardPanel = new JPanel();
-        this.setSize(800,800);
-        this.setVisible(true);
         this.setTitle("Board");
+        this.setSize(800,800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         state = fox.startGame();
@@ -57,6 +56,8 @@ public class MainFrame extends JFrame implements ActionListener {
         this.add(info);
         this.repaint();
         showState();
+
+        this.setVisible(true);
     }
 
     private int idByCoordinates(Coordinates coordinates) {
