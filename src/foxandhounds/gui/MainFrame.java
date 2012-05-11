@@ -136,7 +136,6 @@ public class MainFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == stepButton) {
             play.step();
-            
             showState();
         } else if (e.getSource() == startButton) {
             controlPanel.remove(startButton);
@@ -153,8 +152,8 @@ public class MainFrame extends JFrame implements ActionListener {
             controlPanel.repaint();
             play.stop();
             visualisationTimer.stop();
+            showState();
         } else if (e.getSource() == visualisationTimer) {
-           // stepText.setText((Integer.parseInt(stepText.getText())+1)+"");
             showState();
         }
     }
