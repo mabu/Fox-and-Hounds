@@ -27,7 +27,7 @@ public class Fox extends LearningSystem {
      * @param state Q-values of given state will be returned
      * @return array of Q-values, in the form described above
      */
-    public double[] qValues(State state) {
+    public synchronized double[] qValues(State state) {
         double[] result = new double[4];
         int stateIndex = state.toInt();
         Vector<State> neighbours = state.foxNeighbours(true);

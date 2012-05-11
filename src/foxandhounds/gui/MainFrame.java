@@ -12,6 +12,7 @@ import java.awt.FlowLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.Timer;
 
 /**
  *
@@ -26,12 +27,16 @@ public class MainFrame extends JFrame implements ActionListener {
     private Play play = new Play(fox, hounds);
     private JPanel controlPanel = new JPanel();
     private JButton stepButton = new JButton("Next Step");
+    private JButton startButton = new JButton("Start");
+    private JButton stopButton = new JButton("Stop");
+    private int visualisationDelay = 500; // milliseconds
+    private Timer visualisationTimer = new Timer(visualisationDelay, this);
 
     public MainFrame() {
         JPanel boardPanel = new JPanel();
-        this.setTitle("Board");
-        this.setSize(800,800);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Board");
+        setSize(800, 800);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         F = new Piece("src/foxandhounds/Image/fox-icon.jpg");
         for (int i = 0; i < 4; ++i) {
@@ -42,13 +47,19 @@ public class MainFrame extends JFrame implements ActionListener {
 
         stepButton.addActionListener(this);
         controlPanel.add(stepButton);
-        this.setLayout(new FlowLayout());
-        this.add(boardPanel);
-        this.add(controlPanel);
-        this.repaint();
+        startButton.addActionListener(this);
+        controlPanel.add(startButton);
+        stopButton.addActionListener(this);
+        controlPanel.add(stepButton);
+        setLayout(new FlowLayout());
+        add(boardPanel);
+        add(controlPanel);
+        repaint();
         showState();
 
-        this.setVisible(true);
+        (new Thread(play)).start();
+
+        setVisible(true);
     }
 
     private int idByCoordinates(Coordinates coordinates) {
@@ -69,6 +80,20 @@ public class MainFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == stepButton) {
             play.step();
+            showState();
+        } else if (e.getSource() == startButton) {
+            controlPanel.remove(startButton);
+            controlPanel.add(stopButton);
+            controlPanel.validate();
+            play.start();
+            visualisationTimer.start();
+        } else if (e.getSource() == stopButton) {
+            controlPanel.remove(stopButton);
+            controlPanel.add(startButton);
+            controlPanel.validate();
+            play.stop();
+            visualisationTimer.stop();
+        } else if (e.getSource() == visualisationTimer) {
             showState();
         }
     }

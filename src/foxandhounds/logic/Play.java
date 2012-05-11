@@ -3,11 +3,13 @@
  */
 package foxandhounds.logic;
 
-public class Play {
+public class Play implements Runnable {
     private State state;
     private Fox fox;
     private Hounds hounds;
     private boolean foxTurn = true;
+    private int delay = 500; // delay between moves, in milliseconds
+    private boolean isRunning = false;
 
     public Play(Fox fox, Hounds hounds) {
         this.fox = fox;
@@ -15,11 +17,27 @@ public class Play {
         state = fox.startGame();
     }
 
-    public State getState() {
+    public void run() {
+        while (true) {
+            synchronized(this) {
+                while (!isRunning) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) { }
+                }
+            }
+            step();
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) { }
+        }
+    }
+
+    public synchronized State getState() {
         return state;
     }
 
-    public void step() {
+    public synchronized void step() {
         if (foxTurn) {
             state = fox.move(state);
         } else {
@@ -33,5 +51,14 @@ public class Play {
             foxTurn = false;
         }
         foxTurn = !foxTurn;
+    }
+
+    public synchronized void start() {
+        isRunning = true;
+        notifyAll();
+    }
+
+    public void stop() {
+        isRunning = false;
     }
 }

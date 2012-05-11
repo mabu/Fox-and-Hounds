@@ -44,7 +44,7 @@ abstract public class LearningSystem {
      * @return a state into which the learning system chooses to go, or the same
      *         state if it was final
      */
-    public State move(State state) {
+    public synchronized State move(State state) {
         Vector<State> neighbours = neighbours(state);
         if (neighbours.size() == 0) {
             // FIXME: what to do, if no hound can move?
