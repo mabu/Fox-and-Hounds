@@ -40,7 +40,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private TextField foxLearn = new TextField("0.1");
     private JLabel foxDiscountLabel = new JLabel("Fox Discount Factor:");
     private TextField foxDiscount = new TextField("0.95");
-     private JLabel houndExpRateLabel = new JLabel("Hound Exploration Rate:");
+    private JLabel houndExpRateLabel = new JLabel("Hound Exploration Rate:");
     private TextField houndExpRate = new TextField("0.1");
     private JLabel houndLearnLabel = new JLabel("Hound Learninig Rate:");
     private TextField houndLearn = new TextField("0.1");
@@ -48,6 +48,10 @@ public class MainFrame extends JFrame implements ActionListener {
     private TextField houndDiscount = new TextField("0.95");
     private JLabel stepLabel = new JLabel("Step Number:");
     private JLabel stepText = new JLabel("-1");
+    private JLabel foxWinsLabel = new JLabel("Fox wins:");
+    private JLabel foxWinsText = new JLabel("0");
+    private JLabel houndsWinsLabel = new JLabel("Hounds wins:");
+    private JLabel houndsWinsText = new JLabel("0");
     private int visualisationDelay = 500; // milliseconds
     private Timer visualisationTimer = new Timer(visualisationDelay, this);
 
@@ -56,7 +60,7 @@ public class MainFrame extends JFrame implements ActionListener {
         setTitle("Board");
         setSize(850, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        controlPanel.setLayout(new GridLayout(9, 2));
+        controlPanel.setLayout(new GridLayout(11, 2));
         F = new Piece("src/foxandhounds/Image/fox-icon.jpg");
         for (int i = 0; i < 4; ++i) {
             H[i] = new Piece("src/foxandhounds/Image/dog-icon.jpg");
@@ -67,6 +71,10 @@ public class MainFrame extends JFrame implements ActionListener {
         stepButton.addActionListener(this);
         controlPanel.add(stepLabel);
         controlPanel.add(stepText);
+        controlPanel.add(foxWinsLabel);
+        controlPanel.add(foxWinsText);
+        controlPanel.add(houndsWinsLabel);
+        controlPanel.add(houndsWinsText);
         controlPanel.add(appDelayLabel);
         controlPanel.add(appDelay);
         controlPanel.add(foxDiscountLabel);
@@ -114,7 +122,9 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void showState() {
-        stepText.setText((Integer.parseInt(stepText.getText())+1)+"");
+        stepText.setText(String.valueOf(Integer.parseInt(stepText.getText()) + 1));
+        foxWinsText.setText(String.valueOf(play.getFoxWins()));
+        houndsWinsText.setText(String.valueOf(play.getHoundsWins()));
         State state = play.getState();
         board.addPiece(F, idByCoordinates(state.getFox()));
         Coordinates[] houndsCoordinates = state.getHounds();
