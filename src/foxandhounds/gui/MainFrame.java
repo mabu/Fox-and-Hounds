@@ -5,36 +5,29 @@ import foxandhounds.logic.Fox;
 import foxandhounds.logic.Hounds;
 import foxandhounds.logic.State;
 import foxandhounds.logic.Play;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.text.ParseException;
+import java.awt.FlowLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.JButton;
 
 /**
  *
  * @author Javad
  */
 public class MainFrame extends JFrame implements ActionListener {
-
     private Fox fox = new Fox(0.1, 0.1, 0.95);
     private Piece F;
     private Piece[] H = new Piece[4];
     private Hounds hounds = new Hounds(0.1, 0.1, 0.95);
     private Board board = new Board();
     private Play play = new Play(fox, hounds);
+    private JPanel controlPanel = new JPanel();
+    private JButton stepButton = new JButton("Next Step");
 
-    public MainFrame() throws ParseException, IllegalAccessException, InstantiationException, ClassNotFoundException, IOException, FontFormatException, UnsupportedLookAndFeelException {
-        initUI();
-    }
-
-    private void initUI() throws ParseException, IllegalAccessException, InstantiationException, ClassNotFoundException, FontFormatException, IOException, UnsupportedLookAndFeelException {
-
-        JPanel info = new JPanel();
+    public MainFrame() {
         JPanel boardPanel = new JPanel();
         this.setTitle("Board");
         this.setSize(800,800);
@@ -46,13 +39,12 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         boardPanel.add(board);
-        Button step = new Button("Next Step");
 
-        step.addActionListener(this);
-        info.add(step);
+        stepButton.addActionListener(this);
+        controlPanel.add(stepButton);
         this.setLayout(new FlowLayout());
         this.add(boardPanel);
-        this.add(info);
+        this.add(controlPanel);
         this.repaint();
         showState();
 
@@ -75,7 +67,9 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        play.step();
-        showState();
+        if (e.getSource() == stepButton) {
+            play.step();
+            showState();
+        }
     }
 }
