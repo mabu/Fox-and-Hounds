@@ -52,6 +52,10 @@ public class MainFrame extends JFrame implements ActionListener {
     private JLabel foxWinsText = new JLabel("0");
     private JLabel houndsWinsLabel = new JLabel("Hounds wins:");
     private JLabel houndsWinsText = new JLabel("0");
+    private JLabel foxStatesVisitedLabel = new JLabel("Fox states visited:");
+    private JLabel foxStatesVisitedText = new JLabel("0");
+    private JLabel houndsStatesVisitedLabel = new JLabel("Hounds states visited:");
+    private JLabel houndsStatesVisitedText = new JLabel("0");
     private int visualisationDelay = 500; // milliseconds
     private Timer visualisationTimer = new Timer(visualisationDelay, this);
 
@@ -60,7 +64,7 @@ public class MainFrame extends JFrame implements ActionListener {
         setTitle("Board");
         setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        controlPanel.setLayout(new GridLayout(11, 2));
+        controlPanel.setLayout(new GridLayout(13, 2));
         F = new Piece("src/foxandhounds/Image/fox-icon.jpg");
         for (int i = 0; i < 4; ++i) {
             H[i] = new Piece("src/foxandhounds/Image/dog-icon.jpg");
@@ -77,6 +81,10 @@ public class MainFrame extends JFrame implements ActionListener {
         controlPanel.add(foxWinsText);
         controlPanel.add(houndsWinsLabel);
         controlPanel.add(houndsWinsText);
+        controlPanel.add(foxStatesVisitedLabel);
+        controlPanel.add(foxStatesVisitedText);
+        controlPanel.add(houndsStatesVisitedLabel);
+        controlPanel.add(houndsStatesVisitedText);
         controlPanel.add(appDelayLabel);
         controlPanel.add(appDelay);
         controlPanel.add(foxDiscountLabel);
@@ -113,7 +121,7 @@ public class MainFrame extends JFrame implements ActionListener {
         hounds.setExplorationRate(Double.parseDouble(houndExpRate.getText()));
         hounds.setLearningRate(Double.parseDouble(houndLearn.getText()));
         play.setDelay(Integer.parseInt(appDelay.getText()));
-        visualisationTimer.setDelay(Integer.parseInt(appDelay.getText()));
+        visualisationTimer.setDelay(Math.max(100, Integer.parseInt(appDelay.getText())));
     }
     private int idByCoordinates(Coordinates coordinates) {
         int row = coordinates.getRow();
@@ -124,6 +132,8 @@ public class MainFrame extends JFrame implements ActionListener {
         stepText.setText(String.valueOf(play.getSteps()));
         foxWinsText.setText(String.valueOf(play.getFoxWins()));
         houndsWinsText.setText(String.valueOf(play.getHoundsWins()));
+        foxStatesVisitedText.setText(String.valueOf(fox.getStatesVisited()));
+        houndsStatesVisitedText.setText(String.valueOf(hounds.getStatesVisited()));
         State state = play.getState();
         board.addPiece(F, idByCoordinates(state.getFox()));
         Coordinates[] houndsCoordinates = state.getHounds();

@@ -14,6 +14,8 @@ abstract public class LearningSystem {
     protected int previousStateIndex = -1;
     protected int lastAction;
     protected Random random = new Random();
+    private boolean[] stateVisited = new boolean[State.NUM_STATES];
+    private int statesVisited = 0;
 
     public LearningSystem(double explorationRate, double learningRate,
                           double discountFactor) {
@@ -51,6 +53,10 @@ abstract public class LearningSystem {
             return state;
         }
         int stateIndex = state.toInt();
+        if (!stateVisited[stateIndex]) {
+            stateVisited[stateIndex] = true;
+            ++statesVisited;
+        }
         if (previousStateIndex >= 0) {
             double delta = (discountFactor * max(qValues[stateIndex],
                                                  neighbours.size())
@@ -124,6 +130,15 @@ abstract public class LearningSystem {
             }
         }
         return largest;
+    }
+
+    /**
+     * The number of states which this system has visited.
+     *
+     * @return how many of State.NUM_STATES states were visited by this system.
+     */
+    public int getStatesVisited() {
+        return statesVisited;
     }
 
     /**
