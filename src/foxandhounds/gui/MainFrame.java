@@ -69,6 +69,8 @@ public class MainFrame extends JFrame implements ActionListener {
         boardPanel.add(board);
         
         stepButton.addActionListener(this);
+        stopButton.addActionListener(this);
+        startButton.addActionListener(this);
         controlPanel.add(stepLabel);
         controlPanel.add(stepText);
         controlPanel.add(foxWinsLabel);
@@ -90,10 +92,7 @@ public class MainFrame extends JFrame implements ActionListener {
         controlPanel.add(houndLearnLabel);
         controlPanel.add(houndLearn);
         controlPanel.add(stepButton);
-        startButton.addActionListener(this);
         controlPanel.add(startButton);
-        stopButton.addActionListener(this);
-        controlPanel.add(stepButton);
         setLayout(new FlowLayout());
         add(boardPanel);
         add(controlPanel);
@@ -143,6 +142,7 @@ public class MainFrame extends JFrame implements ActionListener {
             controlPanel.remove(startButton);
             controlPanel.add(stopButton);
             controlPanel.validate();
+            controlPanel.repaint();
             setParameters();
             play.start();
             visualisationTimer.start();
@@ -150,6 +150,7 @@ public class MainFrame extends JFrame implements ActionListener {
             controlPanel.remove(stopButton);
             controlPanel.add(startButton);
             controlPanel.validate();
+            controlPanel.repaint();
             play.stop();
             visualisationTimer.stop();
         } else if (e.getSource() == visualisationTimer) {
