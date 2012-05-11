@@ -47,7 +47,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private JLabel houndDiscountLabel = new JLabel("Hound Discount Factor:");
     private TextField houndDiscount = new TextField("0.95");
     private JLabel stepLabel = new JLabel("Step Number:");
-    private JLabel stepText = new JLabel("-1");
+    private JLabel stepText = new JLabel("0");
     private JLabel foxWinsLabel = new JLabel("Fox wins:");
     private JLabel foxWinsText = new JLabel("0");
     private JLabel houndsWinsLabel = new JLabel("Hounds wins:");
@@ -121,7 +121,7 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void showState() {
-        stepText.setText(String.valueOf(Integer.parseInt(stepText.getText()) + 1));
+        stepText.setText(String.valueOf(play.getSteps()));
         foxWinsText.setText(String.valueOf(play.getFoxWins()));
         houndsWinsText.setText(String.valueOf(play.getHoundsWins()));
         State state = play.getState();

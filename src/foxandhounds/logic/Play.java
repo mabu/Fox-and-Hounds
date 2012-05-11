@@ -11,6 +11,7 @@ public class Play implements Runnable {
     private int delay = 500; // delay between moves, in milliseconds
     private int foxWins = 0;
     private int houndsWins = 0;
+    private int steps = 0;
     private boolean isRunning = false;
 
     public Play(Fox fox, Hounds hounds) {
@@ -58,6 +59,7 @@ public class Play implements Runnable {
             foxTurn = false;
         }
         foxTurn = !foxTurn;
+        ++steps;
     }
 
     public synchronized void start() {
@@ -79,5 +81,9 @@ public class Play implements Runnable {
 
     public int getHoundsWins() {
         return houndsWins;
+    }
+
+    public int getSteps() {
+        return steps;
     }
 }
