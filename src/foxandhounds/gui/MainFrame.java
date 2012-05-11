@@ -32,8 +32,8 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton stepButton = new JButton("Next Step");
     private JButton startButton = new JButton("Start");
     private JButton stopButton = new JButton("Stop");
-    private JLabel appSpeedLabel = new JLabel("Speed (ms):");
-    private TextField appSpeed = new TextField("500");
+    private JLabel appDelayLabel = new JLabel("Delay (ms):");
+    private TextField appDelay = new TextField("500");
     private JLabel foxExpRateLabel = new JLabel("Fox Exploration Rate:");
     private TextField foxExpRate = new TextField("0.1");
     private JLabel foxLearnLabel = new JLabel("Fox Learninig Rate:");
@@ -56,7 +56,7 @@ public class MainFrame extends JFrame implements ActionListener {
         setTitle("Board");
         setSize(850, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        controlPanel.setLayout(new GridLayout(3,2));
+        controlPanel.setLayout(new GridLayout(9, 2));
         F = new Piece("src/foxandhounds/Image/fox-icon.jpg");
         for (int i = 0; i < 4; ++i) {
             H[i] = new Piece("src/foxandhounds/Image/dog-icon.jpg");
@@ -67,8 +67,8 @@ public class MainFrame extends JFrame implements ActionListener {
         stepButton.addActionListener(this);
         controlPanel.add(stepLabel);
         controlPanel.add(stepText);
-        controlPanel.add(appSpeedLabel);
-        controlPanel.add(appSpeed);
+        controlPanel.add(appDelayLabel);
+        controlPanel.add(appDelay);
         controlPanel.add(foxDiscountLabel);
         controlPanel.add(foxDiscount);
         controlPanel.add(foxExpRateLabel);
@@ -105,8 +105,8 @@ public class MainFrame extends JFrame implements ActionListener {
         hounds.setDiscountFactor(Double.parseDouble(houndDiscount.getText()));
         hounds.setExplorationRate(Double.parseDouble(houndExpRate.getText()));
         hounds.setLearningRate(Double.parseDouble(houndLearn.getText()));
-        play.setDelay(Integer.parseInt(appSpeed.getText()));
-        visualisationTimer.setDelay(Integer.parseInt(appSpeed.getText()));
+        play.setDelay(Integer.parseInt(appDelay.getText()));
+        visualisationTimer.setDelay(Integer.parseInt(appDelay.getText()));
     }
     private int idByCoordinates(Coordinates coordinates) {
         int row = coordinates.getRow();
