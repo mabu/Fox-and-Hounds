@@ -63,8 +63,10 @@ public class Fox extends LearningSystem {
      */
     protected double reward(State state) {
         if (state.foxWon()) {
+            ++wins;
             return 1;
         } else if (state.houndsWon()) {
+            ++losses;
             return -1;
         } else {
             return 0;

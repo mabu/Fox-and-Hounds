@@ -9,9 +9,6 @@ public class Play implements Runnable {
     private Hounds hounds;
     private boolean foxTurn = true;
     private int delay = 500; // delay between moves, in milliseconds
-    private int foxWins = 0;
-    private int houndsWins = 0;
-    private int steps = 0;
     private boolean isRunning = false;
 
     public Play(Fox fox, Hounds hounds) {
@@ -47,11 +44,6 @@ public class Play implements Runnable {
             state = hounds.move(state);
         }
         if (state.isFinal()) {
-            if (state.foxWon()) {
-                ++foxWins;
-            } else {
-                ++houndsWins;
-            }
             // update final Q-values and restart the game
             hounds.move(state);
             fox.move(state);
@@ -59,7 +51,6 @@ public class Play implements Runnable {
             foxTurn = false;
         }
         foxTurn = !foxTurn;
-        ++steps;
     }
 
     public synchronized void start() {
@@ -73,17 +64,5 @@ public class Play implements Runnable {
 
     public void setDelay(int delay) {
         this.delay = delay;
-    }
-
-    public int getFoxWins() {
-        return foxWins;
-    }
-
-    public int getHoundsWins() {
-        return houndsWins;
-    }
-
-    public int getSteps() {
-        return steps;
     }
 }

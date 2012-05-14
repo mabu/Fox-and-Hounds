@@ -16,6 +16,10 @@ abstract public class LearningSystem {
     protected Random random = new Random();
     private boolean[] stateVisited = new boolean[State.NUM_STATES];
     private int statesVisited = 0;
+    private int turns;
+
+    protected int losses = 0;
+    protected int wins = 0;
 
     public LearningSystem(double explorationRate, double learningRate,
                           double discountFactor) {
@@ -47,6 +51,7 @@ abstract public class LearningSystem {
      *         state if it was final
      */
     public synchronized State move(State state) {
+        ++turns;
         Vector<State> neighbours = neighbours(state);
         int stateIndex = state.toInt();
         if (!stateVisited[stateIndex]) {
@@ -129,12 +134,39 @@ abstract public class LearningSystem {
     }
 
     /**
-     * The number of states which this system has visited.
+     * Get the number of states which this system has visited.
      *
      * @return how many of State.NUM_STATES states were visited by this system.
      */
     public int getStatesVisited() {
         return statesVisited;
+    }
+
+    /**
+     * Get the number of times the learning system has won.
+     *
+     * @return the number of times the learning system has won
+     */
+    public int getWins() {
+        return wins;
+    }
+
+    /**
+     * Get the number of times the learning system has lost.
+     *
+     * @return the number of times the learning system has lost
+     */
+    public int getLosses() {
+        return losses;
+    }
+
+    /**
+     * Get the number of turns the learning system has made.
+     *
+     * @return the number of turns the learning system has made
+     */
+    public int getTurns() {
+        return turns;
     }
 
     /**

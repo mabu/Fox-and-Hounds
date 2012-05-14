@@ -129,9 +129,9 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void showState() {
-        stepText.setText(String.valueOf(play.getSteps()));
-        foxWinsText.setText(String.valueOf(play.getFoxWins()));
-        houndsWinsText.setText(String.valueOf(play.getHoundsWins()));
+        stepText.setText(String.valueOf(fox.getTurns() + hounds.getTurns()));
+        foxWinsText.setText(String.valueOf(fox.getWins()));
+        houndsWinsText.setText(String.valueOf(hounds.getWins()));
         foxStatesVisitedText.setText(String.valueOf(fox.getStatesVisited()));
         houndsStatesVisitedText.setText(String.valueOf(hounds.getStatesVisited()));
         State state = play.getState();
