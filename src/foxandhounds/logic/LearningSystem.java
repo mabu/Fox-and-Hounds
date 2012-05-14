@@ -48,10 +48,6 @@ abstract public class LearningSystem {
      */
     public synchronized State move(State state) {
         Vector<State> neighbours = neighbours(state);
-        if (neighbours.size() == 0) {
-            // FIXME: what to do, if no hound can move?
-            return state;
-        }
         int stateIndex = state.toInt();
         if (!stateVisited[stateIndex]) {
             stateVisited[stateIndex] = true;

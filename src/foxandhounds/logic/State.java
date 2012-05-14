@@ -41,7 +41,9 @@ public class State {
      * Copy constructor.
      */
     private State(State state) {
-        fox = new Coordinates(state.fox);
+        if (state.fox != null) {
+            fox = new Coordinates(state.fox);
+        }
         for (int i = 0; i < 4; ++i) {
             hounds[i] = new Coordinates(state.hounds[i]);
         }
@@ -206,6 +208,9 @@ public class State {
     public boolean foxWon() {
         if (fox == null) {
             return false;
+        }
+        if (houndsNeighbours(false).size() == 0) {
+            return true;
         }
         for (Coordinates hound : hounds) {
             if (hound.getRow() > fox.getRow()) {

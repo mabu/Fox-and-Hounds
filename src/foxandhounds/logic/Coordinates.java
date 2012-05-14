@@ -26,7 +26,7 @@ public class Coordinates implements Comparable {
     }
 
     public boolean equals(Coordinates other) {
-        return other.row == row && other.column == column;
+        return other != null && other.row == row && other.column == column;
     }
 
     public int compareTo(Object o) {
