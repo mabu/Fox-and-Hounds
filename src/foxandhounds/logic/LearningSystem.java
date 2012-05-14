@@ -28,6 +28,18 @@ abstract public class LearningSystem {
         this.discountFactor = discountFactor;
     }
 
+    public double getExplorationRate() {
+        return explorationRate;
+    }
+
+    public double getLearningRate() {
+        return learningRate;
+    }
+
+    public double getDiscountFactor() {
+        return discountFactor;
+    }
+
     public void setExplorationRate(double explorationRate) {
         this.explorationRate = explorationRate;
     }
@@ -37,7 +49,7 @@ abstract public class LearningSystem {
     }
 
     public void setDiscountFactor(double discountFactor) {
-        this.discountFactor = explorationRate;
+        this.discountFactor = discountFactor;
     }
 
     /**
