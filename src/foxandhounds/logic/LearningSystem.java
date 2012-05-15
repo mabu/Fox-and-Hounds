@@ -13,13 +13,13 @@ abstract public class LearningSystem {
     protected double[][] qValues;
     protected int previousStateIndex = -1;
     protected int lastAction;
+    protected long losses = 0;
+    protected long wins = 0;
     protected Random random = new Random();
+
     private boolean[] stateVisited = new boolean[State.NUM_STATES];
     private int statesVisited = 0;
-    private int turns;
-
-    protected int losses = 0;
-    protected int wins = 0;
+    private long turns = 0;
 
     public LearningSystem(double explorationRate, double learningRate,
                           double discountFactor) {
@@ -159,7 +159,7 @@ abstract public class LearningSystem {
      *
      * @return the number of times the learning system has won
      */
-    public int getWins() {
+    public long getWins() {
         return wins;
     }
 
@@ -168,7 +168,7 @@ abstract public class LearningSystem {
      *
      * @return the number of times the learning system has lost
      */
-    public int getLosses() {
+    public long getLosses() {
         return losses;
     }
 
@@ -177,7 +177,7 @@ abstract public class LearningSystem {
      *
      * @return the number of turns the learning system has made
      */
-    public int getTurns() {
+    public long getTurns() {
         return turns;
     }
 
