@@ -4,6 +4,7 @@ SOURCE  = \
 	BoardPanel.java \
 	ControlPanel.java \
 	Piece.java \
+	LearningSystemInfo.java \
 	MainFrame.java \
 	Main.java \
 

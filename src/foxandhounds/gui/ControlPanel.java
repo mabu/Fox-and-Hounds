@@ -2,12 +2,13 @@ package foxandhounds.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.Timer;
 import javax.swing.JTextField;
-import java.awt.GridLayout;
 import foxandhounds.logic.Fox;
 import foxandhounds.logic.Hounds;
 import foxandhounds.logic.State;
@@ -24,64 +25,27 @@ public class ControlPanel extends JPanel implements ActionListener {
     private JButton stopButton = new JButton("Stop");
     private JLabel appDelayLabel = new JLabel("Delay (ms):");
     private JTextField appDelay = new JTextField("500");
-    private JLabel foxExpRateLabel = new JLabel("Fox exploration rate:");
-    private JTextField foxExpRate = new JTextField("0.1");
-    private JLabel foxLearnLabel = new JLabel("Fox learninig rate:");
-    private JTextField foxLearn = new JTextField("0.1");
-    private JLabel foxDiscountLabel = new JLabel("Fox discount factor:");
-    private JTextField foxDiscount = new JTextField("0.95");
-    private JLabel houndExpRateLabel = new JLabel("Hound exploration rate:");
-    private JTextField houndExpRate = new JTextField("0.1");
-    private JLabel houndLearnLabel = new JLabel("Hound learninig rate:");
-    private JTextField houndLearn = new JTextField("0.1");
-    private JLabel houndDiscountLabel = new JLabel("Hound discount factor:");
-    private JTextField houndDiscount = new JTextField("0.95");
-    private JLabel stepLabel = new JLabel("Step number:");
-    private JLabel stepText = new JLabel("0");
-    private JLabel foxWinsLabel = new JLabel("Fox wins:");
-    private JLabel foxWinsText = new JLabel("0");
-    private JLabel houndsWinsLabel = new JLabel("Hounds wins:");
-    private JLabel houndsWinsText = new JLabel("0");
-    private JLabel foxStatesVisitedLabel = new JLabel("Fox states visited:");
-    private JLabel foxStatesVisitedText = new JLabel("0");
-    private JLabel houndsStatesVisitedLabel = new JLabel("Hounds states visited:");
-    private JLabel houndsStatesVisitedText = new JLabel("0");
     private int visualisationDelay = 500; // milliseconds
     private Timer visualisationTimer = new Timer(visualisationDelay, this);
+    private LearningSystemInfo foxInfo = new LearningSystemInfo(fox);
+    private LearningSystemInfo houndsInfo = new LearningSystemInfo(hounds);
+    private static GridBagConstraints startStopConstraints = constraints(1, 5, 1);
 
     public ControlPanel(BoardPanel boardPanel) {
         this.boardPanel = boardPanel;
 
-        setLayout(new GridLayout(13, 2));
+        setLayout(new GridBagLayout());
         stepButton.addActionListener(this);
         stopButton.addActionListener(this);
         startButton.addActionListener(this);
-        add(stepLabel);
-        add(stepText);
-        add(foxWinsLabel);
-        add(foxWinsText);
-        add(houndsWinsLabel);
-        add(houndsWinsText);
-        add(foxStatesVisitedLabel);
-        add(foxStatesVisitedText);
-        add(houndsStatesVisitedLabel);
-        add(houndsStatesVisitedText);
-        add(appDelayLabel);
-        add(appDelay);
-        add(foxDiscountLabel);
-        add(foxDiscount);
-        add(foxExpRateLabel);
-        add(foxExpRate);
-        add(foxLearnLabel);
-        add(foxLearn);
-        add(houndDiscountLabel);
-        add(houndDiscount);
-        add(houndExpRateLabel);
-        add(houndExpRate);
-        add(houndLearnLabel);
-        add(houndLearn);
-        add(stepButton);
-        add(startButton);
+        add(new JLabel("Fox"), constraints(0, 0, 2));
+        add(foxInfo, constraints(0, 1, 2));
+        add(new JLabel("Hounds"), constraints(0, 2, 2));
+        add(houndsInfo, constraints(0, 3, 2));
+        add(appDelayLabel, constraints(0, 4, 1));
+        add(appDelay, constraints(1, 4, 1));
+        add(stepButton, constraints(0, 5, 1));
+        add(startButton, startStopConstraints);
         setParameters();
         update();
         
@@ -89,22 +53,19 @@ public class ControlPanel extends JPanel implements ActionListener {
     }
 
     private void setParameters() {
-        fox.setDiscountFactor(Double.parseDouble(foxDiscount.getText()));
-        fox.setExplorationRate(Double.parseDouble(foxExpRate.getText()));
-        fox.setLearningRate(Double.parseDouble(foxLearn.getText()));
-        hounds.setDiscountFactor(Double.parseDouble(houndDiscount.getText()));
-        hounds.setExplorationRate(Double.parseDouble(houndExpRate.getText()));
-        hounds.setLearningRate(Double.parseDouble(houndLearn.getText()));
+        fox.setDiscountFactor(foxInfo.getDiscountFactor());
+        fox.setExplorationRate(foxInfo.getExplorationRate());
+        fox.setLearningRate(foxInfo.getLearningRate());
+        hounds.setDiscountFactor(houndsInfo.getDiscountFactor());
+        hounds.setExplorationRate(houndsInfo.getExplorationRate());
+        hounds.setLearningRate(houndsInfo.getLearningRate());
         play.setDelay(Integer.parseInt(appDelay.getText()));
         visualisationTimer.setDelay(Math.max(100, Integer.parseInt(appDelay.getText())));
     }
 
     private void update() {
-        stepText.setText(String.valueOf(fox.getTurns() + hounds.getTurns()));
-        foxWinsText.setText(String.valueOf(fox.getWins()));
-        houndsWinsText.setText(String.valueOf(hounds.getWins()));
-        foxStatesVisitedText.setText(String.valueOf(fox.getStatesVisited()));
-        houndsStatesVisitedText.setText(String.valueOf(hounds.getStatesVisited()));
+        foxInfo.update();
+        houndsInfo.update();
         boardPanel.showState(play.getState());
     }
 
@@ -115,7 +76,7 @@ public class ControlPanel extends JPanel implements ActionListener {
             update();
         } else if (e.getSource() == startButton) {
             remove(startButton);
-            add(stopButton);
+            add(stopButton, startStopConstraints);
             validate();
             repaint();
             setParameters();
@@ -123,7 +84,7 @@ public class ControlPanel extends JPanel implements ActionListener {
             visualisationTimer.start();
         } else if (e.getSource() == stopButton) {
             remove(stopButton);
-            add(startButton);
+            add(startButton, startStopConstraints);
             validate();
             repaint();
             play.stop();
@@ -132,5 +93,13 @@ public class ControlPanel extends JPanel implements ActionListener {
         } else if (e.getSource() == visualisationTimer) {
             update();
         }
+    }
+
+    static private GridBagConstraints constraints(int x, int y, int width) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridwidth = width;
+        return gbc;
     }
 }
