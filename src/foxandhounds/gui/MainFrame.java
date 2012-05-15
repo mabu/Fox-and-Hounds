@@ -10,7 +10,7 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         BoardPanel boardPanel = new BoardPanel();
-        ControlPanel controlPanel = new ControlPanel(boardPanel);
+        ControlPanel controlPanel = new ControlPanel(boardPanel,this);
 
         setLayout(new FlowLayout());
         add(boardPanel);

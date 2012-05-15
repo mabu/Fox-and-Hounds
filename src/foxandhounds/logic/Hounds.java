@@ -3,9 +3,10 @@
  */
 package foxandhounds.logic;
 
+import java.io.*;
 import java.util.Vector;
 
-public class Hounds extends LearningSystem {
+public class Hounds extends LearningSystem implements Serializable{
     /*
      * During a move, hounds have to choose one of 4 hounds and move it to
      * one of up to 2 directions, which gives a maximum of 8 actions from any
@@ -61,4 +62,5 @@ public class Hounds extends LearningSystem {
             return 0;
         }
     }
+    
 }

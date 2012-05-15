@@ -3,26 +3,30 @@
  */
 package foxandhounds.logic;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Vector;
 
-public class Fox extends LearningSystem {
+public class Fox extends LearningSystem implements Serializable{
     /*
-     * Fox may go to up to 4 directions: up left, up right, down left,
-     * down right.
-     * There is also a special state when the fox has not yet chosen its initial
-     * position. Its index is State.NUM_STATES - 1 and the i-th action
+     * Fox may go to up to 4 directions: up left, up right, down left, down
+     * right. There is also a special state when the fox has not yet chosen its
+     * initial position. Its index is State.NUM_STATES - 1 and the i-th action
      * is to choose i-th column as a starting position.
      */
+
     public Fox(double explorationRate, double learningRate,
-               double discountFactor) {
+            double discountFactor) {
         super(explorationRate, learningRate, discountFactor);
         qValues = new double[State.NUM_STATES][4];
     }
 
     /**
-     * Returns Q-values of given state.
-     * The Q-values are given for fox moves in that order: up left, up right,
-     * down left, down right.
+     * Returns Q-values of given state. The Q-values are given for fox moves in
+     * that order: up left, up right, down left, down right.
      *
      * @param state Q-values of given state will be returned
      * @return array of Q-values, in the form described above
@@ -42,8 +46,7 @@ public class Fox extends LearningSystem {
     }
 
     /**
-     * Initialize the game.
-     * The fox chooses initial position.
+     * Initialize the game. The fox chooses initial position.
      *
      * @return initial game state
      */
@@ -72,4 +75,6 @@ public class Fox extends LearningSystem {
             return 0;
         }
     }
+
+    
 }

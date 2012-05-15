@@ -10,15 +10,19 @@ import javax.swing.JTextField;
 import java.awt.GridLayout;
 import foxandhounds.logic.Fox;
 import foxandhounds.logic.Hounds;
+import foxandhounds.logic.LearningSystem;
 import foxandhounds.logic.State;
 import foxandhounds.logic.Play;
+import java.awt.Button;
+import java.io.*;
+import javax.swing.*;
 
 public class ControlPanel extends JPanel implements ActionListener {
+
     private BoardPanel boardPanel;
     private Fox fox = new Fox(0.1, 0.1, 0.95);
     private Hounds hounds = new Hounds(0.1, 0.1, 0.95);
     private Play play = new Play(fox, hounds);
-
     private JButton stepButton = new JButton("Next step");
     private JButton startButton = new JButton("Start");
     private JButton stopButton = new JButton("Stop");
@@ -48,14 +52,22 @@ public class ControlPanel extends JPanel implements ActionListener {
     private JLabel houndsStatesVisitedText = new JLabel("0");
     private int visualisationDelay = 500; // milliseconds
     private Timer visualisationTimer = new Timer(visualisationDelay, this);
+    private JButton openFile = new JButton("Open File");
+    private JButton saveFox = new JButton("Save Fox");
+    private JButton saveHounds = new JButton("Save Hounds");
+    private JFileChooser fc = new JFileChooser();
+    private MainFrame frame;
 
-    public ControlPanel(BoardPanel boardPanel) {
+    public ControlPanel(BoardPanel boardPanel, MainFrame frame) {
         this.boardPanel = boardPanel;
-
+        this.frame = frame;
         setLayout(new GridLayout(13, 2));
         stepButton.addActionListener(this);
         stopButton.addActionListener(this);
         startButton.addActionListener(this);
+        openFile.addActionListener(this);
+        saveFox.addActionListener(this);
+        saveHounds.addActionListener(this);
         add(stepLabel);
         add(stepText);
         add(foxWinsLabel);
@@ -82,9 +94,13 @@ public class ControlPanel extends JPanel implements ActionListener {
         add(houndLearn);
         add(stepButton);
         add(startButton);
+        add(openFile);
+        add(saveFox);
+        add(saveHounds);
+        fc.setCurrentDirectory(new File ("."));
         setParameters();
         update();
-        
+
         (new Thread(play)).start();
     }
 
@@ -108,6 +124,42 @@ public class ControlPanel extends JPanel implements ActionListener {
         boardPanel.showState(play.getState());
     }
 
+    public void Save(String fileName, LearningSystem L) {
+        try {
+            FileOutputStream fout = new FileOutputStream(fileName);
+            ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(fout));
+            oos.writeObject(L);
+            oos.close();
+            //return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            //return false;
+        }
+
+
+    }
+
+    public void Load(String fileName) {
+
+        try {
+
+            FileInputStream fin = new FileInputStream(fileName);
+            ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(fin));
+            Object s = ois.readObject();
+            if (s instanceof Fox) {
+                fox = (Fox) s;
+            } else {
+                hounds = (Hounds) s;
+            }
+            ois.close();
+            play = new Play(fox, hounds);
+            update();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == stepButton) {
             setParameters();
@@ -129,6 +181,29 @@ public class ControlPanel extends JPanel implements ActionListener {
             play.stop();
             visualisationTimer.stop();
             update();
+        } else if (e.getSource() == openFile) {
+            try {
+                fc.showOpenDialog(frame);
+                String fileName = fc.getSelectedFile().getName();
+                fileName=fc.getCurrentDirectory().getPath()+File.separator+ fileName;
+                Load(fileName);
+            } catch (Exception e2) {
+            }
+        } else if (e.getSource() == saveFox) {
+            try {
+                fc.showSaveDialog(frame);
+                String fileName = fc.getSelectedFile().getName();
+                fileName=fc.getCurrentDirectory().getPath()+File.separator+ fileName;
+                Save(fileName, fox);
+            } catch (Exception e2) {
+            }
+        } else if (e.getSource() == saveHounds) {
+            try{
+            fc.showSaveDialog(frame);
+            String fileName = fc.getSelectedFile().getName();
+            fileName=fc.getCurrentDirectory().getPath()+File.separator+ fileName;
+            Save(fileName, hounds);
+            }catch (Exception e2){}
         } else if (e.getSource() == visualisationTimer) {
             update();
         }

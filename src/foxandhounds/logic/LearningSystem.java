@@ -3,10 +3,11 @@
  */
 package foxandhounds.logic;
 
+import java.io.Serializable;
 import java.util.Random;
 import java.util.Vector;
 
-abstract public class LearningSystem {
+abstract public class LearningSystem implements Serializable{
     protected double explorationRate;
     protected double learningRate;
     protected double discountFactor;
@@ -51,6 +52,7 @@ abstract public class LearningSystem {
     public void setDiscountFactor(double discountFactor) {
         this.discountFactor = discountFactor;
     }
+    
 
     /**
      * Learning system execution.
@@ -188,4 +190,5 @@ abstract public class LearningSystem {
      * @return a reward value
      */
     abstract protected double reward(State state);
+    
 }
