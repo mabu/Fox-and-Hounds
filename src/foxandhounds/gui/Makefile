@@ -1,7 +1,8 @@
 PACKAGE = foxandhounds.gui
 
 SOURCE  = \
-	Board.java \
+	BoardPanel.java \
+	ControlPanel.java \
 	Piece.java \
 	MainFrame.java \
 	Main.java \
