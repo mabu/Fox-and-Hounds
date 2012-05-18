@@ -27,13 +27,12 @@ public class Play implements Runnable {
                     } catch (InterruptedException e) { }
                 }
             }
-            if (notTerminated == false) {
-                return;
+            if (notTerminated) {
+                step();
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) { }
             }
-            step();
-            try {
-                Thread.sleep(delay);
-            } catch (InterruptedException e) { }
         }
     }
 
@@ -69,7 +68,7 @@ public class Play implements Runnable {
     public synchronized void terminate() {
         notTerminated = false;
         if (!isRunning) {
-            notifyAll();
+            start();
         }
     }
 
