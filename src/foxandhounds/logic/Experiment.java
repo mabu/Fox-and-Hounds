@@ -133,6 +133,11 @@ public class Experiment implements Runnable {
             t3.join();
             t4.join();
             System.out.println("Done training.");
+            fox1.save("experiment1/fox1.fox");
+            fox2.save("experiment1/fox2.fox");
+            hounds1.save("experiment1/hounds1.hounds");
+            hounds2.save("experiment1/hounds2.hounds");
+            System.out.println("Saved.");
             Experiment e5 = new Experiment(fox1, hounds1, 100000, 100);
             Thread t5 = e5.run(cycles,
                                new PrintStream("experiment1/fox1VShounds1"));

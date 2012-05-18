@@ -6,6 +6,9 @@ package foxandhounds.logic;
 import java.io.Serializable;
 import java.util.Random;
 import java.util.Vector;
+import java.io.FileOutputStream;
+import java.io.BufferedOutputStream;
+import java.io.ObjectOutputStream;
 
 abstract public class LearningSystem implements Serializable, Cloneable {
     protected double explorationRate;
@@ -196,5 +199,17 @@ abstract public class LearningSystem implements Serializable, Cloneable {
             cloned = super.clone();
         } catch (CloneNotSupportedException exception) { }
         return cloned;
+    }
+
+    public void save(String fileName) {
+        try {
+            FileOutputStream fout = new FileOutputStream(fileName);
+            BufferedOutputStream boos = new BufferedOutputStream(fout);
+            ObjectOutputStream oos = new ObjectOutputStream(boos);
+            oos.writeObject(this);
+            oos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
