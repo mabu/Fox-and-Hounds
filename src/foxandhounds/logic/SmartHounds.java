@@ -11,7 +11,7 @@ import java.util.LinkedList;
 public class SmartHounds extends Hounds implements Serializable, Cloneable {
     private static final int RECENT_RESULTS_LENGTH = 100;
     private LinkedList<Boolean> recentResults = new LinkedList<Boolean>();
-    private int recentWins;
+    private int recentLosses;
 
     public SmartHounds(double explorationRate, double learningRate,
                double discountFactor) {
@@ -27,12 +27,12 @@ public class SmartHounds extends Hounds implements Serializable, Cloneable {
     protected double reward(State state) {
         if (state.houndsWon()) {
             ++wins;
-            ++recentWins;
             recentResults.offer(true);
             updateExplorationRate();
             return 1;
         } else if (state.foxWon()) {
             ++losses;
+            ++recentLosses;
             recentResults.offer(false);
             updateExplorationRate();
             return -1;
@@ -43,11 +43,11 @@ public class SmartHounds extends Hounds implements Serializable, Cloneable {
 
     private void updateExplorationRate() {
         if (recentResults.size() > RECENT_RESULTS_LENGTH) {
-            if (recentResults.poll()) {
-                --recentWins;
+            if (!recentResults.poll()) {
+                --recentLosses;
             }
         }
-        setExplorationRate(0.5 - wins / (double)recentResults.size());
+        setExplorationRate(0.2 * recentLosses / (double)recentResults.size());
     }
 
     public Object clone() {
