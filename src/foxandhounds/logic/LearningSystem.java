@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Random;
 import java.util.Vector;
 
-abstract public class LearningSystem implements Serializable{
+abstract public class LearningSystem implements Serializable, Cloneable {
     protected double explorationRate;
     protected double learningRate;
     protected double discountFactor;
@@ -52,7 +52,6 @@ abstract public class LearningSystem implements Serializable{
     public void setDiscountFactor(double discountFactor) {
         this.discountFactor = discountFactor;
     }
-    
 
     /**
      * Learning system execution.
@@ -191,4 +190,11 @@ abstract public class LearningSystem implements Serializable{
      */
     abstract protected double reward(State state);
     
+    protected Object clone() {
+        Object cloned = null;
+        try {
+            cloned = super.clone();
+        } catch (CloneNotSupportedException exception) { }
+        return cloned;
+    }
 }

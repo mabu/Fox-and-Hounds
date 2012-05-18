@@ -1,17 +1,16 @@
-/**
- * Hounds learning system.
- */
 package foxandhounds.logic;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.Vector;
 
-public class Hounds extends LearningSystem implements Serializable{
-    /*
-     * During a move, hounds have to choose one of 4 hounds and move it to
-     * one of up to 2 directions, which gives a maximum of 8 actions from any
-     * given state.
-     */
+/**
+ * Hounds learning system.
+ *
+ * During a move, hounds have to choose one of 4 hounds and move it to one of
+ * up to 2 directions, which gives a maximum of 8 actions from any given state.
+ */
+public class Hounds extends LearningSystem implements Serializable, Cloneable {
+
     public Hounds(double explorationRate, double learningRate,
                   double discountFactor) {
         super(explorationRate, learningRate, discountFactor);
@@ -62,5 +61,8 @@ public class Hounds extends LearningSystem implements Serializable{
             return 0;
         }
     }
-    
+
+    public Object clone() {
+        return super.clone();
+    }
 }

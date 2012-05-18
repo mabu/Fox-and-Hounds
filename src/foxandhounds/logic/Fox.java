@@ -13,7 +13,7 @@ import java.util.Vector;
  * initial position. Its index is State.NUM_STATES - 1 and the i-th action
  * is to choose i-th column as a starting position.
  */
-public class Fox extends LearningSystem implements Serializable{
+public class Fox extends LearningSystem implements Serializable, Cloneable {
 
     public Fox(double explorationRate, double learningRate,
                double discountFactor) {
@@ -75,4 +75,7 @@ public class Fox extends LearningSystem implements Serializable{
         }
     }
 
+    public Object clone() {
+        return super.clone();
+    }
 }
