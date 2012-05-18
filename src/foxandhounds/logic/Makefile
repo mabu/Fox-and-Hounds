@@ -7,6 +7,8 @@ SOURCE  = \
 	Play.java \
 	Hounds.java \
 	LearningSystem.java \
+	SmartFox.java \
+	SmartHounds.java \
 	State.java \
 
 RMI_SOURCE =
