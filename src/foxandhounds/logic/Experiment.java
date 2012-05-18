@@ -66,9 +66,7 @@ public class Experiment implements Runnable {
             Fox evaluationFox = (Fox)fox.clone();
             Hounds evaluationHounds = (Hounds)hounds.clone();
             evaluationFox.setLearningRate(0);
-            evaluationFox.setExplorationRate(0);
             evaluationHounds.setLearningRate(0);
-            evaluationHounds.setExplorationRate(0);
             State evaluationState = evaluationFox.startGame();
             long initFoxWins = evaluationFox.getWins();
             long initHoundsWins = evaluationHounds.getWins();
