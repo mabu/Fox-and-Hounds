@@ -72,14 +72,13 @@ public class Experiment implements Runnable {
             State evaluationState = evaluationFox.startGame();
             long initFoxWins = evaluationFox.getWins();
             long initHoundsWins = evaluationHounds.getWins();
-            while (evaluationFox.getWins() + evaluationFox.getLosses()
+            while (evaluationFox.getWins() + evaluationHounds.getWins()
                    - initFoxWins - initHoundsWins < evaluationGames) {
                 evaluationState = step(evaluationFox, evaluationHounds,
                                        evaluationState);
             }
             out.println((evaluationFox.getWins() - initFoxWins) + " "
                         + (evaluationHounds.getWins() - initHoundsWins));
-            out.println(evaluationFox.getWins() + " " + initFoxWins + " " + evaluationHounds.getWins() + " " + initHoundsWins + " " + evaluationGames);
         }
         isRunning = false;
     }
