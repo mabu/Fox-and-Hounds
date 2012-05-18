@@ -76,4 +76,8 @@ public class Play implements Runnable {
     public void setDelay(int delay) {
         this.delay = delay;
     }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
 }

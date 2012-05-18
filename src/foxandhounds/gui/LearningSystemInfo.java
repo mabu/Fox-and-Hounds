@@ -30,7 +30,7 @@ public class LearningSystemInfo extends JPanel {
         this.learningSystem = learningSystem;
         explorationRate = new JTextField(String.valueOf(learningSystem.getExplorationRate()));
         learningRate = new JTextField(String.valueOf(learningSystem.getLearningRate()));
-        discountFactor = new JTextField("0.95");
+        discountFactor = new JTextField(String.valueOf(learningSystem.getDiscountFactor()));
         turns = new JLabel(String.valueOf(learningSystem.getTurns()));
         wins = new JLabel(String.valueOf(learningSystem.getWins()));
         losses = new JLabel(String.valueOf(learningSystem.getLosses()));

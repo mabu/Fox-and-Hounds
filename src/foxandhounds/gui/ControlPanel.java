@@ -19,10 +19,15 @@ import java.io.*;
 import javax.swing.*;
 
 public class ControlPanel extends JPanel implements ActionListener {
+    static private final double defaultExplRate = 0.1;
+    static private final double defaultLearningRate = 0.1;
+    static private final double defaultDiscountFactor = 0.99;
 
     private BoardPanel boardPanel;
-    private Fox fox = new Fox(0.1, 0.1, 0.95);
-    private Hounds hounds = new Hounds(0.1, 0.1, 0.95);
+    private Fox fox = new Fox(defaultExplRate, defaultLearningRate,
+                              defaultDiscountFactor);
+    private Hounds hounds = new Hounds(defaultExplRate, defaultLearningRate,
+                                       defaultDiscountFactor);
     private Play play = new Play(fox, hounds);
     private JButton stepButton = new JButton("Next step");
     private JButton startButton = new JButton("Start");
@@ -31,6 +36,7 @@ public class ControlPanel extends JPanel implements ActionListener {
     private JTextField appDelay = new JTextField("500");
     private int visualisationDelay = 500; // milliseconds
     private Timer visualisationTimer = new Timer(visualisationDelay, this);
+    private JButton reset = new JButton("Reset");
     private JButton openFile = new JButton("Open File");
     private JButton saveFox = new JButton("Save Fox");
     private JButton saveHounds = new JButton("Save Hounds");
@@ -45,6 +51,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         stepButton.addActionListener(this);
         stopButton.addActionListener(this);
         startButton.addActionListener(this);
+        reset.addActionListener(this);
         openFile.addActionListener(this);
         saveFox.addActionListener(this);
         saveHounds.addActionListener(this);
@@ -57,7 +64,8 @@ public class ControlPanel extends JPanel implements ActionListener {
         add(appDelay, constraints(1, 4, 1));
         add(stepButton, constraints(0, 5, 1));
         add(startButton, startStopConstraints);
-        add(openFile,constraints(0, 6, 1));
+        add(reset,constraints(0, 6, 1));
+        add(openFile,constraints(1, 6, 1));
         add(saveFox,constraints(0, 7, 1));
         add(saveHounds,constraints(1, 7, 1));
         setParameters();
@@ -143,6 +151,24 @@ public class ControlPanel extends JPanel implements ActionListener {
             repaint();
             play.stop();
             visualisationTimer.stop();
+            update();
+        } else if (e.getSource() == reset) {
+            if (play.isRunning()) {
+                visualisationTimer.stop();
+                remove(stopButton);
+                add(startButton, startStopConstraints);
+                validate();
+                repaint();
+            }
+            play.terminate();
+            fox = new Fox(defaultExplRate, defaultLearningRate,
+                          defaultDiscountFactor);
+            foxInfo.setLearningSystem(fox);
+            hounds = new Hounds(defaultExplRate, defaultLearningRate,
+                                defaultDiscountFactor);
+            houndsInfo.setLearningSystem(hounds);
+            play = new Play(fox, hounds);
+            (new Thread(play)).start();
             update();
         } else if (e.getSource() == openFile) {
             try {
