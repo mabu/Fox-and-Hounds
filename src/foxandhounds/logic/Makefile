@@ -2,6 +2,7 @@ PACKAGE = foxandhounds.logic
 
 SOURCE  = \
 	Coordinates.java \
+	Experiment.java \
 	Fox.java \
 	Play.java \
 	Hounds.java \
@@ -10,6 +11,6 @@ SOURCE  = \
 
 RMI_SOURCE =
 
-MAIN       = 
+MAIN       = Experiment
 
 include $(JAVA_DEV_ROOT)/Makefile
