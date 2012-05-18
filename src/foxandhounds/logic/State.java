@@ -284,4 +284,20 @@ public class State {
         }
         return intState * 28 + foxCoordinate;
     }
+
+    /**
+     * Determines if it is a fox's turn based on positions of pieces.
+     *
+     * @return true, if it is fox's turn, false otherwise
+     */
+    public boolean foxTurn() {
+        if (fox == null) {
+            return true;
+        }
+        int sum = fox.getRow();
+        for (Coordinates hound : hounds) {
+            sum += hound.getRow();
+        }
+        return sum % 2 == 0;
+    }
 }
