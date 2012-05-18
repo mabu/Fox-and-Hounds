@@ -35,14 +35,12 @@ public class ControlPanel extends JPanel implements ActionListener {
     private JButton saveFox = new JButton("Save Fox");
     private JButton saveHounds = new JButton("Save Hounds");
     private JFileChooser fc = new JFileChooser();
-    private MainFrame frame;
     private LearningSystemInfo foxInfo = new LearningSystemInfo(fox);
     private LearningSystemInfo houndsInfo = new LearningSystemInfo(hounds);
     private static GridBagConstraints startStopConstraints = constraints(1, 5, 1);
 
-    public ControlPanel(BoardPanel boardPanel, MainFrame frame) {
+    public ControlPanel(BoardPanel boardPanel) {
         this.boardPanel = boardPanel;
-        this.frame = frame;
         setLayout(new GridBagLayout());
         stepButton.addActionListener(this);
         stopButton.addActionListener(this);
@@ -109,8 +107,10 @@ public class ControlPanel extends JPanel implements ActionListener {
             Object s = ois.readObject();
             if (s instanceof Fox) {
                 fox = (Fox) s;
+                foxInfo.setLearningSystem(fox);
             } else {
                 hounds = (Hounds) s;
+                houndsInfo.setLearningSystem(hounds);
             }
             ois.close();
             play = new Play(fox, hounds);
@@ -144,27 +144,27 @@ public class ControlPanel extends JPanel implements ActionListener {
             update();
         } else if (e.getSource() == openFile) {
             try {
-                fc.showOpenDialog(frame);
+                fc.showOpenDialog(this);
                 String fileName = fc.getSelectedFile().getName();
-                fileName=fc.getCurrentDirectory().getPath()+File.separator+ fileName;
+                fileName= fc.getCurrentDirectory().getPath() + File.separator + fileName;
                 Load(fileName);
             } catch (Exception e2) {
             }
         } else if (e.getSource() == saveFox) {
             try {
-                fc.showSaveDialog(frame);
+                fc.showSaveDialog(this);
                 String fileName = fc.getSelectedFile().getName();
                 fileName=fc.getCurrentDirectory().getPath()+File.separator+ fileName;
                 Save(fileName, fox);
             } catch (Exception e2) {
             }
         } else if (e.getSource() == saveHounds) {
-            try{
-            fc.showSaveDialog(frame);
+            try {
+            fc.showSaveDialog(this);
             String fileName = fc.getSelectedFile().getName();
             fileName=fc.getCurrentDirectory().getPath()+File.separator+ fileName;
             Save(fileName, hounds);
-            }catch (Exception e2){}
+            } catch (Exception e2){}
         } else if (e.getSource() == visualisationTimer) {
             update();
         }
@@ -175,6 +175,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         gbc.gridx = x;
         gbc.gridy = y;
         gbc.gridwidth = width;
+        if (width == 1) gbc.fill = GridBagConstraints.BOTH;
         return gbc;
     }
 }

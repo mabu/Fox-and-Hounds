@@ -71,4 +71,11 @@ public class LearningSystemInfo extends JPanel {
     public double getDiscountFactor() {
         return Double.parseDouble(discountFactor.getText());
     }
+
+    public void setLearningSystem(LearningSystem learningSystem) {
+        this.learningSystem = learningSystem;
+        explorationRate.setText(String.valueOf(learningSystem.getExplorationRate()));
+        learningRate.setText(String.valueOf(learningSystem.getLearningRate()));
+        discountFactor.setText(String.valueOf(learningSystem.getDiscountFactor()));
+    }
 }
