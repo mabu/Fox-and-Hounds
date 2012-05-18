@@ -10,6 +10,7 @@ public class Play implements Runnable {
     private boolean foxTurn = true;
     private int delay = 500; // delay between moves, in milliseconds
     private boolean isRunning = false;
+    private boolean notTerminated = true;
 
     public Play(Fox fox, Hounds hounds) {
         this.fox = fox;
@@ -18,13 +19,16 @@ public class Play implements Runnable {
     }
 
     public void run() {
-        while (true) {
+        while (notTerminated) {
             synchronized(this) {
                 while (!isRunning) {
                     try {
                         wait();
                     } catch (InterruptedException e) { }
                 }
+            }
+            if (notTerminated == false) {
+                return;
             }
             step();
             try {
@@ -60,6 +64,13 @@ public class Play implements Runnable {
 
     public void stop() {
         isRunning = false;
+    }
+
+    public synchronized void terminate() {
+        notTerminated = false;
+        if (!isRunning) {
+            notifyAll();
+        }
     }
 
     public void setDelay(int delay) {

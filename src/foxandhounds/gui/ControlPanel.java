@@ -113,7 +113,9 @@ public class ControlPanel extends JPanel implements ActionListener {
                 houndsInfo.setLearningSystem(hounds);
             }
             ois.close();
+            play.terminate();
             play = new Play(fox, hounds);
+            (new Thread(play)).start();
             update();
         } catch (Exception e) {
             e.printStackTrace();
