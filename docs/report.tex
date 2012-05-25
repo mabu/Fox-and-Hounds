@@ -1,8 +1,9 @@
 \documentclass[a4paper]{article}
+\usepackage{clrscode}
 
 \title{Q-learning for Fox and Hounds Board Game}
 \author{Javad Bakhshi \and Martynas Budriunas}
-\date{2012-05-??}
+\date{2012-05-29}
 
 \begin{document}
 
@@ -31,25 +32,121 @@ the board. The fox can choose a starting position on any of black squares in the
 row on the opposite edge of the board. The pieces can only move to unoccupied
 adjacent black squares. Additionally, the hounds can only move forward. The
 players take alternative turns with the fox moving first. On each turn only one
-of the hounds can be moved.
+of the hounds can be moved. The player who cannot make a move loses.
 
 Fox and Hounds is an easy game aimed at young children. A human player can
-easily find an optimal strategy for the hounds which guarantee victory. In this
-project we try to investigate how good a computer can be in finding that
-solution. To do that we have implemented learning systems for both players
-based on Q-learning.
+easily find an optimal strategy for the hounds which guarantee victory (such a
+strategy is described in \cite{berlekamp82}). In this project we try to
+investigate how good a computer can be in finding that solution. To do that we
+have implemented learning systems for both players based on Q-learning.
 
 \section{Q-learning}
+Q-learning is a reinforcement learning technique first presented in
+\cite{watkins89}. Like in other reinforcement learning techniques, the agent is
+presented with a state and can do one of several actions and the environment
+responds by giving a reward. Using this technique each state-action pair $(s,
+a)$ is assigned a Q-value $Q(s, a)$ which represents how much the agent favours
+taking the action $a$ from a state $s$. In $\epsilon$-greedy Q-learning an agent
+chooses a random action with probability $\epsilon$, and with probability $1 -
+\epsilon$ it acts greedily -- performs an action with highest Q-value. After
+going to a state $s\prime$ and receiving a reward $r$, a Q-value is updated
+using the following rule:
+\[
+    Q(s, a) \gets Q(s, a) + \eta [r + \gamma \max_{a\prime} Q(s\prime, a\prime)
+    - Q(s, a)]
+\]
+
+Here $\eta$ is a learning rate and $\gamma$ is a discount factor. This way the
+agent is trained to seek higher sum of future rewards.
+
+Q-learning was applied to various board games. A very successful example is
+TD\mbox{-}Gammon \cite{gerald95} -- a backgammon player which uses
+temporal-difference learning, a generalization of Q-learning.
 
 \section{Implementation}
+In this game the players have different roles, so a separate learning system is
+needed for both of them.
 
-\section{Expirements}
+As shown in \cite{berlekamp82}, the hounds have a winning strategy, so to speed
+up the learning we made the game slightly easier for the fox -- it wins as soon
+as it reaches the same row as the last hound.
+
+\subsection{States}
+Many games are troublesome to be solved by Q-learning because of a large number
+of states. This game, however, has a number of states small enough to be stored
+in a table. The number of states can be calculated as follows. There are 32
+black squares on a board, and 4 of them are occupied by hounds. Since the
+hounds do not differ, the number of their positions is $C_{32}^4 = \frac{32
+\cdot 31 \cdot 30 \cdot 29}{4!} = 35960$. A fox can be in any of the remaining
+28 black squares, so the total number of states is $35960 \cdot 28 + 1 =
+1006881$. Here we added 1 because there is a special state when the fox is not
+yet on the board.
+
+We have implemented the table as a two-dimensional array, where the index in
+one dimension represents a state and in the other -- the action. The state is
+encoded as an integer in range $[0, \frac{32!}{27! \cdot 4!}]$ as shown in the
+following pseudocode.
+
+\begin{codebox}
+    \Procname{$\proc{StateToInt}(fox, hounds)$}
+    \li $NUM\_STATES = 32! / 28! / 4! \cdot 28 + 1$
+    \li \If $\proc{NotOnTheBoard}(fox)$
+    \li     \Then \Return $NUM\_STATES - 1$
+        \End
+    \li $state \gets 0$
+    \li $foxCoordinate \gets 4 \cdot fox.row + fox.column$
+    \li \For $i \gets 1$ \To 4
+    \li \Do $houndCoordinate \gets 4 \cdot hounds[i].row + hounds[i].column$
+    \li     $state \gets state + C_{houndCoordinate}^i$
+    \li     \If $fox.row > hounds[i].row$ \kw{or}
+    \li \>\> $fox.row = hounds[i].row$ \kw{and} $fox.column > hounds[i].column$
+    \li         \Then $foxCoordinate \gets foxCoordinate - 1$
+            \End
+        \End
+    \li \Return $intState \cdot 28 + foxCoordinate$
+    \End
+\end{codebox}
+
+The columns here are integers from 0 to 3 and the rows are integers from 0 to 7.
+The coordinates are then converted to integers by calculating $4 \cdot row +
+column$. Arrangement of the hounds is then one of 4-element subsets of a set of
+$8 \cdot 4 = 32$ elements. Lines 6--8 implement a method to enumerate those
+combinations. Position of the fox is then represented as a number from 0 to 27,
+which is an index of an empty square in a sequence of empty squares ordered by
+increasing coordinate after placing the hounds. The special case when the fox
+is not on the board is encoded as the number of other possible states.
+
+It can be proven that each state can only occur after a move of a certain
+player. Notice that the sum of the rows of all pieces modulo 2 is an invariant
+with value 0 before fox's move and 1 before hounds' move. This means that the
+number of states for one learning system's table of Q-values can be half of the
+total number of states.
+
+\subsection{Actions}
+Each fox can do at most 4 actions -- move to any of the unoccupied squares. The
+hounds can do at most 8 actions -- each of the 4 hounds can move in up to 2
+directions.
+
+\section{Experiments}
 
 \section{Results}
 
 \section{Conclusions and Future Work}
 
 \begin{thebibliography}{9}
+\bibitem{watkins89}
+    Chris Watkins,
+    {\em Learning from Delayed Rewards}.
+    PhD Thesis, University of Cambridge, 1989.
+\bibitem{gerald95}
+    Gerald Tesauro,
+    {\em Temporal difference learning and TD-Gammon}.
+    Communications of the ACM,
+    Volume 38 Issue 3, March 1995.
+\bibitem{berlekamp82}
+    E. Berlekamp, J. Conway, R. Guy,
+    {\em Winning Ways for your Mathematical Plays}.
+    Volume 2, 1982, p. 635--645.
 \end{thebibliography}
 
 \end{document}
