@@ -4,6 +4,10 @@
 package foxandhounds.logic;
 
 import java.io.Serializable;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.Random;
 import java.util.Vector;
 import java.io.FileOutputStream;
@@ -201,6 +205,11 @@ abstract public class LearningSystem implements Serializable, Cloneable {
         return cloned;
     }
 
+    /**
+     * Saves a learning system to a file.
+     *
+     * @param fileName the name of the file
+     */
     public void save(String fileName) {
         try {
             FileOutputStream fout = new FileOutputStream(fileName);
@@ -211,5 +220,25 @@ abstract public class LearningSystem implements Serializable, Cloneable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Loads a learning system from a file.
+     *
+     * @param fileName the name of the file
+     * @return a learning system stored in the given file, or null on error
+     */
+    static public LearningSystem load(String fileName) {
+        try {
+            FileInputStream fin = new FileInputStream(fileName);
+            BufferedInputStream bis = new BufferedInputStream(fin);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            LearningSystem learningSystem = (LearningSystem) ois.readObject();
+            ois.close();
+            return learningSystem;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
