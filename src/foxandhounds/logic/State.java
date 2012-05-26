@@ -154,6 +154,8 @@ public class State {
                         } else if (includeNulls) {
                             neighbours.add(null);
                         }
+                    } else if (includeNulls) {
+                        neighbours.add(null);
                     }
                 } else {
                     if (hounds[i].getColumn() > 0) {
@@ -164,6 +166,8 @@ public class State {
                         } else if (includeNulls) {
                             neighbours.add(null);
                         }
+                    } else if (includeNulls) {
+                        neighbours.add(null);
                     }
                 }
             } else if (includeNulls) {
