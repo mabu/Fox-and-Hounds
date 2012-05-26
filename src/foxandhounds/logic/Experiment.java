@@ -77,7 +77,7 @@ public class Experiment implements Runnable {
                 evaluationState = step(evaluationFox, evaluationHounds,
                                        evaluationState);
             }
-            out.print(cycle * trainingTurns);
+            out.print(cycle);
             out.print(" " + (evaluationFox.getWins() - initFoxWins));
             // evaluate hounds
             initFoxWins = evaluationFox.getWins();
@@ -89,7 +89,9 @@ public class Experiment implements Runnable {
                 evaluationState = step(evaluationFox, evaluationHounds,
                                        evaluationState);
             }
-            out.println(" " + (evaluationHounds.getWins() - initHoundsWins));
+            out.println(" " + (evaluationHounds.getWins() - initHoundsWins)
+                        + " " + fox.getStatesVisited()
+                        + " " + hounds.getStatesVisited());
         }
         isRunning = false;
     }
@@ -232,7 +234,43 @@ public class Experiment implements Runnable {
         catch (InterruptedException ignored) { }
     }
 
+    /**
+     * Expirement with not trained foxes and hounds.
+     *
+     * @param cycles the number of cycles for the experiments
+     */
+    private static void experiment5(int cycles) {
+        Fox[] foxes = new Fox[4];
+        Hounds[] hounds = new Hounds[4];
+        Experiment[] experiments = new Experiment[foxes.length];
+        foxes[0] = new Fox(0.1, 0.5, 0.99);
+        foxes[1] = new Fox(0.1, 0.5, 0.99);
+        foxes[2] = new Fox(0.2, 0.5, 0.99);
+        foxes[3] = new Fox(0.2, 0.5, 0.99);
+        hounds[0] = new Hounds(0.1, 0.5, 0.99);
+        hounds[1] = new Hounds(0.2, 0.5, 0.99);
+        hounds[2] = new Hounds(0.1, 0.5, 0.99);
+        hounds[3] = new Hounds(0.2, 0.5, 0.99);
+        Thread[] threads = new Thread[foxes.length];
+
+        try {
+            for (int i = 0; i < foxes.length; ++i) {
+                experiments[i] = new Experiment(foxes[i], hounds[i], 100000,
+                                                100);
+                threads[i] = experiments[i].run(cycles,
+                                       new PrintStream("experiment5/exp5-" + i + ".csv"));
+            }
+            for (int i = 0; i < foxes.length; ++i) {
+                threads[i].join();
+                foxes[i].save("experiment5/" + i + ".fox");
+                hounds[i].save("experiment5/" + i + ".hounds");
+            }
+        }
+        catch (FileNotFoundException ignored) { }
+        catch (InterruptedException ignored) { }
+    }
+
     public static void main(String args[]) {
-        experiment4(100);
+        experiment5(1000);
     }
 }
