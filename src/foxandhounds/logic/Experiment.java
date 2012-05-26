@@ -17,7 +17,7 @@ public class Experiment implements Runnable {
     private State state;
     private long trainingTurns;
     private long evaluationGames;
-    private int cyclesLeft;
+    private int cycles;
     private PrintStream out;
     private boolean isRunning = false;
 
@@ -50,7 +50,7 @@ public class Experiment implements Runnable {
      * @return the thread which runs the experiment
      */
     public synchronized Thread run(int cycles, PrintStream out) {
-        cyclesLeft = cycles;
+        this.cycles = cycles;
         this.out = out;
         Thread thread = new Thread(this);
         thread.start();
@@ -59,7 +59,7 @@ public class Experiment implements Runnable {
 
     public synchronized void run() {
         isRunning = true;
-        while (cyclesLeft-- > 0) {
+        for (int cycle = 1; cycle <= cycles; ++cycle) {
             for (int i = 0; i < trainingTurns; ++i) {
                 state = step(fox, hounds, state);
             }
@@ -77,7 +77,8 @@ public class Experiment implements Runnable {
                 evaluationState = step(evaluationFox, evaluationHounds,
                                        evaluationState);
             }
-            out.print((evaluationFox.getWins() - initFoxWins) + " ");
+            out.print(cycle * trainingTurns);
+            out.print(" " + (evaluationFox.getWins() - initFoxWins));
             // evaluate hounds
             initFoxWins = evaluationFox.getWins();
             initHoundsWins = evaluationHounds.getWins();
@@ -88,7 +89,7 @@ public class Experiment implements Runnable {
                 evaluationState = step(evaluationFox, evaluationHounds,
                                        evaluationState);
             }
-            out.println(evaluationHounds.getWins() - initHoundsWins);
+            out.println(" " + (evaluationHounds.getWins() - initHoundsWins));
         }
         isRunning = false;
     }
@@ -162,69 +163,40 @@ public class Experiment implements Runnable {
     }
 
     /**
-     * In this experiment we train two foxes and two instances of hounds with
-     * different learning rates against random opponents. Then we make them play
-     * against each other.
-     * 
+     * Experiment with various foxes against random hounds.
+     *
      * @param cycles the number of cycles for the experiments
      */
     private static void experiment3(int cycles) {
-        Fox fox1 = new Fox(0.1, 0.5, 0.99);
-        Fox fox2 = new Fox(0.1, 0.3, 0.99);
-        Fox randomFox1 = new Fox(0, 0, 0);
-        Fox randomFox2 = new Fox(0, 0, 0);
-        Hounds hounds1 = new Hounds(0.1, 0.5, 0.99);
-        Hounds hounds2 = new Hounds(0.1, 0.3, 0.99);
-        Hounds randomHounds1 = new Hounds(0, 0, 0);
-        Hounds randomHounds2 = new Hounds(0, 0, 0);
+        Fox[] foxes = new Fox[8];
+        Experiment[] experiments = new Experiment[foxes.length];
+        Thread[] threads = new Thread[foxes.length];
+        foxes[0] = new Fox(0.1, 0.5, 0.99);
+        foxes[1] = new Fox(0.2, 0.5, 0.99);
+        foxes[2] = new Fox(0.1, 0.5, 0.95);
+        foxes[3] = new Fox(0.2, 0.5, 0.95);
+        foxes[4] = new Fox(0.1, 0.3, 0.99);
+        foxes[5] = new Fox(0.2, 0.3, 0.99);
+        foxes[6] = new Fox(0.1, 0.3, 0.95);
+        foxes[7] = new Fox(0.2, 0.3, 0.95);
 
         try {
-            Experiment e1 = new Experiment(fox1, randomHounds1, 100000, 100);
-            Thread t1 = e1.run(cycles,
-                               new PrintStream("experiment3/fox1VSrandom"));
-            Experiment e2 = new Experiment(fox2, randomHounds2, 100000, 100);
-            Thread t2 = e2.run(cycles,
-                               new PrintStream("experiment3/fox2VSrandom"));
-            Experiment e3 = new Experiment(randomFox1, hounds1, 100000, 100);
-            Thread t3 = e3.run(cycles,
-                               new PrintStream("experiment3/hounds1VSrandom"));
-            Experiment e4 = new Experiment(randomFox2, hounds2, 100000, 100);
-            Thread t4 = e4.run(cycles,
-                               new PrintStream("experiment3/hounds2VSrandom"));
-            t1.join();
-            t2.join();
-            t3.join();
-            t4.join();
-            System.out.println("Done training.");
-            fox1.save("experiment1/fox1.fox");
-            fox2.save("experiment1/fox2.fox");
-            hounds1.save("experiment1/hounds1.hounds");
-            hounds2.save("experiment1/hounds2.hounds");
-            System.out.println("Saved.");
-            Experiment e5 = new Experiment(fox1, hounds1, 100000, 100);
-            Thread t5 = e5.run(cycles,
-                               new PrintStream("experiment1/fox1VShounds1"));
-            Experiment e6 = new Experiment(fox2, hounds2, 100000, 100);
-            Thread t6 = e6.run(cycles,
-                               new PrintStream("experiment1/fox2VShounds2"));
-            t5.join();
-            t6.join();
-            System.out.println("Done first round.");
-            Experiment e7 = new Experiment(fox1, hounds2, 100000, 100);
-            Thread t7 = e7.run(cycles,
-                               new PrintStream("experiment1/fox1VShounds2"));
-            Experiment e8 = new Experiment(fox2, hounds1, 100000, 100);
-            Thread t8 = e8.run(cycles,
-                               new PrintStream("experiment1/fox2VShounds1"));
-            t7.join();
-            t8.join();
-            System.out.println("Done second round.");
+            for (int i = 0; i < foxes.length; ++i) {
+                experiments[i] = new Experiment(foxes[i], new Hounds(0, 0, 0),
+                                                100000, 100);
+                threads[i] = experiments[i].run(cycles,
+                                           new PrintStream("experiment3/" + i));
+            }
+            for (int i = 0; i < foxes.length; ++i) {
+                threads[i].join();
+                foxes[i].save("experiment3/" + i + ".fox");
+            }
         }
         catch (FileNotFoundException ignored) { }
         catch (InterruptedException ignored) { }
     }
 
     public static void main(String args[]) {
-        experiment2(100);
+        experiment3(100);
     }
 }
