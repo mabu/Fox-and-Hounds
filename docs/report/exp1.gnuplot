@@ -1,5 +1,5 @@
 set title "Experiment 1: Graph 1"
-set xlabel "Training steps (thousands)"
+set xlabel "Training steps (100 thousand)"
 set ylabel "Wins"
 set border 3
 set xtics nomirror

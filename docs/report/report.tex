@@ -1,8 +1,6 @@
 \documentclass[a4paper]{article}
 \usepackage{clrscode}
 \usepackage{graphicx}
-\usepackage{epstopdf}
-\usepackage{gnuplottex}
 
 \title{Q-learning for Fox and Hounds Board Game}
 \author{Javad Bakhshi \and Martynas Budriunas}
@@ -156,6 +154,31 @@ hounds against randomly playing fox.
 \input{exp2graph1.tex}
 
 \input{exp2graph2.tex}
+
+\subsection{Experiment 3}
+This time we trained the foxes the same way as in experiment 2 we trained the
+hounds.
+
+\input{exp3graph1.tex}
+
+\input{exp3graph2.tex}
+
+\subsection{Experiment 4}
+In this experiment we can see the results of further training first two hounds
+from experiment 2 against first two foxes from experiment 3.
+
+\input{exp4graph1.tex}
+
+\input{exp4graph2.tex}
+
+\input{exp4graph3.tex}
+
+\input{exp4graph4.tex}
+
+As we can see the hounds trained in experiment 2 loose seldom. Foxes are also
+well trained and can often take advantage of even such a well-trained hounds'
+exploration -- in the cases where hounds' exploration was higher, foxes
+performed better.
 
 \section{Conclusions and Future Work}
 
