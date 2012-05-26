@@ -133,7 +133,6 @@ public class Experiment implements Runnable {
      * @param cycles the number of cycles for the experiments
      */
     private static void experiment2(int cycles) {
-        Fox fox = new Fox(0, 0, 0);
         Hounds[] hounds = new Hounds[8];
         Experiment[] experiments = new Experiment[hounds.length];
         Thread[] threads = new Thread[hounds.length];
@@ -148,7 +147,8 @@ public class Experiment implements Runnable {
 
         try {
             for (int i = 0; i < hounds.length; ++i) {
-                experiments[i] = new Experiment(fox, hounds[i], 100000, 100);
+                experiments[i] = new Experiment(new Fox(0, 0, 0), hounds[i],
+                                                100000, 100);
                 threads[i] = experiments[i].run(cycles,
                                            new PrintStream("experiment2/" + i));
             }
@@ -181,16 +181,16 @@ public class Experiment implements Runnable {
         try {
             Experiment e1 = new Experiment(fox1, randomHounds1, 100000, 100);
             Thread t1 = e1.run(cycles,
-                               new PrintStream("experiment1/fox1VSrandom"));
+                               new PrintStream("experiment3/fox1VSrandom"));
             Experiment e2 = new Experiment(fox2, randomHounds2, 100000, 100);
             Thread t2 = e2.run(cycles,
-                               new PrintStream("experiment1/fox2VSrandom"));
+                               new PrintStream("experiment3/fox2VSrandom"));
             Experiment e3 = new Experiment(randomFox1, hounds1, 100000, 100);
             Thread t3 = e3.run(cycles,
-                               new PrintStream("experiment1/hounds1VSrandom"));
+                               new PrintStream("experiment3/hounds1VSrandom"));
             Experiment e4 = new Experiment(randomFox2, hounds2, 100000, 100);
             Thread t4 = e4.run(cycles,
-                               new PrintStream("experiment1/hounds2VSrandom"));
+                               new PrintStream("experiment3/hounds2VSrandom"));
             t1.join();
             t2.join();
             t3.join();
