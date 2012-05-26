@@ -68,15 +68,27 @@ public class Experiment implements Runnable {
             evaluationFox.setLearningRate(0);
             evaluationHounds.setLearningRate(0);
             State evaluationState = evaluationFox.startGame();
+            // evaluate fox
             long initFoxWins = evaluationFox.getWins();
             long initHoundsWins = evaluationHounds.getWins();
+            evaluationFox.setExplorationRate(0);
             while (evaluationFox.getWins() + evaluationHounds.getWins()
                    - initFoxWins - initHoundsWins < evaluationGames) {
                 evaluationState = step(evaluationFox, evaluationHounds,
                                        evaluationState);
             }
-            out.println((evaluationFox.getWins() - initFoxWins) + " "
-                        + (evaluationHounds.getWins() - initHoundsWins));
+            out.print((evaluationFox.getWins() - initFoxWins) + " ");
+            // evaluate hounds
+            initFoxWins = evaluationFox.getWins();
+            initHoundsWins = evaluationHounds.getWins();
+            evaluationFox.setExplorationRate(fox.getExplorationRate());
+            evaluationHounds.setExplorationRate(0);
+            while (evaluationFox.getWins() + evaluationHounds.getWins()
+                   - initFoxWins - initHoundsWins < evaluationGames) {
+                evaluationState = step(evaluationFox, evaluationHounds,
+                                       evaluationState);
+            }
+            out.println(evaluationHounds.getWins() - initHoundsWins);
         }
         isRunning = false;
     }
@@ -97,13 +109,66 @@ public class Experiment implements Runnable {
     }
 
     /**
+     * In this experiment two random learning systems play against each other.
+     *
+     * @param cycles the number of cycles for the experiments
+     */
+    private static void experiment1(int cycles) {
+        Fox fox = new Fox(0, 0, 0);
+        Hounds hounds = new Hounds(0, 0, 0);
+
+        try {
+            Experiment e1 = new Experiment(fox, hounds, 100000, 100);
+            Thread t1 = e1.run(cycles,
+                               new PrintStream("experiment0.txt"));
+            t1.join();
+        }
+        catch (FileNotFoundException ignored) { }
+        catch (InterruptedException ignored) { }
+    }
+
+    /**
+     * Experiment with various hounds against a random fox.
+     *
+     * @param cycles the number of cycles for the experiments
+     */
+    private static void experiment2(int cycles) {
+        Fox fox = new Fox(0, 0, 0);
+        Hounds[] hounds = new Hounds[8];
+        Experiment[] experiments = new Experiment[hounds.length];
+        Thread[] threads = new Thread[hounds.length];
+        hounds[0] = new Hounds(0.1, 0.5, 0.99);
+        hounds[1] = new Hounds(0.2, 0.5, 0.99);
+        hounds[2] = new Hounds(0.1, 0.5, 0.95);
+        hounds[3] = new Hounds(0.2, 0.5, 0.95);
+        hounds[4] = new Hounds(0.1, 0.3, 0.99);
+        hounds[5] = new Hounds(0.2, 0.3, 0.99);
+        hounds[6] = new Hounds(0.1, 0.3, 0.95);
+        hounds[7] = new Hounds(0.2, 0.3, 0.95);
+
+        try {
+            for (int i = 0; i < hounds.length; ++i) {
+                experiments[i] = new Experiment(fox, hounds[i], 100000, 100);
+                threads[i] = experiments[i].run(cycles,
+                                           new PrintStream("experiment2/" + i));
+            }
+            for (int i = 0; i < hounds.length; ++i) {
+                threads[i].join();
+                hounds[i].save("experiment2/" + i + ".hounds");
+            }
+        }
+        catch (FileNotFoundException ignored) { }
+        catch (InterruptedException ignored) { }
+    }
+
+    /**
      * In this experiment we train two foxes and two instances of hounds with
      * different learning rates against random opponents. Then we make them play
      * against each other.
      * 
      * @param cycles the number of cycles for the experiments
      */
-    private static void experiment1(int cycles) {
+    private static void experiment3(int cycles) {
         Fox fox1 = new Fox(0.1, 0.5, 0.99);
         Fox fox2 = new Fox(0.1, 0.3, 0.99);
         Fox randomFox1 = new Fox(0, 0, 0);
@@ -160,6 +225,6 @@ public class Experiment implements Runnable {
     }
 
     public static void main(String args[]) {
-        experiment1(100);
+        experiment2(100);
     }
 }
