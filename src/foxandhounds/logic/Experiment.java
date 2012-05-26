@@ -189,7 +189,43 @@ public class Experiment implements Runnable {
             }
             for (int i = 0; i < foxes.length; ++i) {
                 threads[i].join();
-                foxes[i].save("experiment3/" + i + ".fox");
+                foxes[i].save("experiment2/" + i + ".fox");
+            }
+        }
+        catch (FileNotFoundException ignored) { }
+        catch (InterruptedException ignored) { }
+    }
+
+    /**
+     * Expirement with trained foxes and hounds.
+     *
+     * @param cycles the number of cycles for the experiments
+     */
+    private static void experiment4(int cycles) {
+        Fox[] foxes = new Fox[4];
+        Hounds[] hounds = new Hounds[4];
+        Experiment[] experiments = new Experiment[foxes.length];
+        foxes[0] = (Fox)LearningSystem.load("experiment3/0.fox");
+        foxes[1] = (Fox)LearningSystem.load("experiment3/0.fox");
+        foxes[2] = (Fox)LearningSystem.load("experiment3/1.fox");
+        foxes[3] = (Fox)LearningSystem.load("experiment3/1.fox");
+        hounds[0] = (Hounds)LearningSystem.load("experiment2/0.hounds");
+        hounds[1] = (Hounds)LearningSystem.load("experiment2/1.hounds");
+        hounds[2] = (Hounds)LearningSystem.load("experiment2/0.hounds");
+        hounds[3] = (Hounds)LearningSystem.load("experiment2/1.hounds");
+        Thread[] threads = new Thread[foxes.length];
+
+        try {
+            for (int i = 0; i < foxes.length; ++i) {
+                experiments[i] = new Experiment(foxes[i], hounds[i], 100000,
+                                                100);
+                threads[i] = experiments[i].run(cycles,
+                                       new PrintStream("experiment4/exp4-" + i + ".csv"));
+            }
+            for (int i = 0; i < foxes.length; ++i) {
+                threads[i].join();
+                foxes[i].save("experiment4/" + i + ".fox");
+                hounds[i].save("experiment4/" + i + ".hounds");
             }
         }
         catch (FileNotFoundException ignored) { }
@@ -197,6 +233,6 @@ public class Experiment implements Runnable {
     }
 
     public static void main(String args[]) {
-        experiment3(100);
+        experiment4(100);
     }
 }
