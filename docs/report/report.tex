@@ -1,5 +1,8 @@
 \documentclass[a4paper]{article}
 \usepackage{clrscode}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{gnuplottex}
 
 \title{Q-learning for Fox and Hounds Board Game}
 \author{Javad Bakhshi \and Martynas Budriunas}
@@ -128,8 +131,31 @@ hounds can do at most 8 actions -- each of the 4 hounds can move in up to 2
 directions.
 
 \section{Experiments}
+To run an experiment we repeat the following two phases a hundred times:
+\begin{enumerate}
+    \item Training phase: let the training systems play against each other for
+        100,000 turns.
+    \item Evaluation phase: set learning rates to 0. Set the exploration
+        rate of one system to 0, play 100 games and record the number of wins
+        of the other system. Then do the same evaluation of the other learning
+        system. Reset the learning rates and exploration rates to the initial
+        values.
+\end{enumerate}
 
-\section{Results}
+\subsection{Experiment 1}
+To begin we present the results of an experiment of both fox and hounds playing
+randomly (all parameters are 0). Clearly the fox has an advantage in this
+situation.
+
+\input{exp1.tex}
+
+\subsection{Experiment 2}
+In this experiment we wanted to find out the best parameters for training the
+hounds against randomly playing fox.
+
+\input{exp2graph1.tex}
+
+\input{exp2graph2.tex}
 
 \section{Conclusions and Future Work}
 
