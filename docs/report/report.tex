@@ -102,13 +102,13 @@ following pseudocode.
 
 \begin{codebox}
     \Procname{$\proc{StateToInt}(fox, hounds)$}
-    \li $NUM\_STATES = 32! / 28! / 4! \cdot 28 + 1$
     \li \If $\proc{NotOnTheBoard}(fox)$
-    \li     \Then \Return $NUM\_STATES - 1$
+    \li     \Then \Return $32! / 28! / 4! \cdot 28$
         \End
     \li $state \gets 0$
     \li $foxCoordinate \gets 4 \cdot fox.row + fox.column$
-    \li \For $i \gets 1$ \To 4
+    \li \For $i \gets 1$ \To 4 \>\>\>\>\> \Comment $hounds$ array is sorted in
+                                                   ascending order of coordinate
     \li \Do $houndCoordinate \gets 4 \cdot hounds[i].row + hounds[i].column$
     \li     $state \gets state + C_{houndCoordinate}^i$
     \li     \If $fox.row > hounds[i].row$ \kw{or}
@@ -123,12 +123,17 @@ following pseudocode.
 The columns here are integers from 0 to 3 and the rows are integers from 0 to 7.
 The coordinates are converted to integers by calculating $4 \cdot row +
 column$. Arrangement of the hounds is one of 4-element subsets of a set of $8
-\cdot 4 = 32$ elements. Lines 6--8 implement a method to enumerate those % explain?
-combinations. Position of the fox is then represented as a number from 0 to 27,
-which is an index of a square in a sequence of empty squares left after placing
-the hounds, ordered by increasing coordinate. This way the states are mapped to
-integers in the range $[0, \frac{32!}{27! \cdot 4!})$ and the special case when
-the fox is not on the board is encoded as $\frac{32!}{27! \cdot 4!}$.
+\cdot 4 = 32$ elements. Lines 5--7 implement a method to enumerate those
+combinations. It is based on a place of a subset in a lexicographic order of all
+subsets $\{e_4, e_3, e_2, e_1\}$, $e_1 < e_2 < e_3 < e_4$. If $i$th hound has
+a coordinate $e_i$, there are $C_{e_i}^i$ subsets for which elements to the
+left from the $i$th are the same and the $i$th element is smaller than $e_i$
+(for more details refer to \cite{knuth02}). Position of the fox is then
+represented as a number from 0 to 27, which is an index of a square in a
+sequence of empty squares left after placing the hounds, ordered by increasing
+coordinate. This way the states are mapped to integers in the range $[0,
+\frac{32!}{27! \cdot 4!})$ and the special case when the fox is not on the
+board is encoded as $\frac{32!}{27!  \cdot 4!}$.
 
 It can be proven that each state can only occur after a move of a certain
 player. Notice that the sum of the rows of all pieces modulo 2 is an invariant
@@ -277,7 +282,12 @@ our source code repository \cite{github}.
 \bibitem{berlekamp82}
     E. Berlekamp, J. Conway, R. Guy,
     {\em Winning Ways for your Mathematical Plays}.
-    Volume 2, 1982, p. 635--645.
+    Volume 2, 1982, pp. 635--645.
+\bibitem{knuth02}
+    Donald E. Knuth,
+    {\em Generating All Combinations and Partitions}.
+    The Art of Computer Programming, Volume 4, Fascicle 3, Addison-Wesley, pp.
+    5-−6.
 \bibitem{github}
     \url{https://github.com/mabu/Fox-and-Hounds}
 \end{thebibliography}

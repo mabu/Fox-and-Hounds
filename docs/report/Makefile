@@ -19,6 +19,7 @@ GRAPHS=exp1.eps \
 
 report.pdf: $(GRAPHS) report.tex
 	pdflatex report.tex
+	pdflatex report.tex
 
 clean:
 	rm -f *.pdf *.eps exp*.tex *.aux *.log
