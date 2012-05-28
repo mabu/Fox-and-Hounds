@@ -7,6 +7,10 @@ GRAPHS=exp1.eps \
        exp4graph2.eps \
        exp4graph3.eps \
        exp4graph4.eps \
+       exp5graph1.eps \
+       exp5graph2.eps \
+       exp5graph3.eps \
+       exp5graph4.eps \
 
 %.eps: %.gnuplot
 	gnuplot $*.gnuplot
