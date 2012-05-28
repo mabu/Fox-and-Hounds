@@ -1,4 +1,4 @@
-set title "Experiment 1: Graph 1"
+set title "Experiment 1, Graph 1: Random Fox vs Random Hounds"
 set xlabel "Training steps (100 thousand)"
 set ylabel "Wins"
 set border 3

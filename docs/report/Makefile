@@ -11,6 +11,7 @@ GRAPHS=exp1.eps \
        exp5graph2.eps \
        exp5graph3.eps \
        exp5graph4.eps \
+       exp5graph5.eps \
 
 %.eps: %.gnuplot
 	gnuplot $*.gnuplot
