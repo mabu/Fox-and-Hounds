@@ -138,15 +138,16 @@ board is encoded as $\frac{32!}{27!  \cdot 4!}$.
 It can be proven that each state can only occur after a move of a certain
 player. Notice that the sum of the rows of all pieces modulo 2 is an invariant
 with value 0 before fox's move and 1 before hounds' move. This means that the
-number of states for one learning system's table of Q-values can be half of the
-total number of states.
+number of states for one learning system's table of Q-values can be a half of
+the total number of states.
 
 \subsection{Actions}
 Each fox can do at most 4 actions. In the initial state when it is not on the
-board yet, it can choose any of the 4 black squares in the row in the side of
+board yet, it can choose any of the 4 black squares in the row on the side of
 the board opposite from the hounds. Note that this is the only case when a fox
 moves twice in a row, as it begins the game. From all the other states the fox
-can move to any of the unoccupied adjacent squares, which is at most 4.
+can move to any of the unoccupied adjacent squares, of which there are at most
+4.
 
 The hounds can do at most 8 actions -- each of the 4 hounds can move in up to 2
 directions.
@@ -190,9 +191,9 @@ hounds against randomly playing fox.
 
 From the many learning rates we have tried, 0.5 seems to produce the fastest
 learning, as can be observed by comparing the two graphs above. Higher
-discount factor resulted in the better stability in the long run. The
-instances with $0.2$ exploration rate reached very high evaluation scores
-a couple million turns earlier than the ones with $\epsilon = 0.1$.
+discount factor resulted in a better stability in the long run. The instances
+with $0.2$ exploration rate reached very high evaluation scores a couple
+million turns earlier than the ones with $\epsilon = 0.1$.
 
 \subsection{Experiment 3}
 This time we trained the foxes the same way as in experiment 2 we trained the
@@ -219,9 +220,9 @@ first two foxes from experiment 3.
 \input{exp4graph4.tex}
 
 As we can see the hounds trained in experiment 2 lose seldom. Foxes are also
-well trained and can often take advantage of even such a well-trained hounds'
-exploration -- in the cases where hounds' exploration was higher, foxes
-performed better.
+well-trained and can often take advantage of even such a well-trained hounds'
+exploration. In the cases where hounds' exploration was higher, foxes performed
+better.
 
 \subsection{Experiment 5}
 We further examine the performance of both players learning from scratch.
@@ -262,10 +263,10 @@ that the hounds have a winning strategy as proved in \cite{berlekamp82}, and we
 could derive it from the table of Q-values of a trained player.
 
 Our learning system design can be further improved by reducing the Q-values
-table size by a factor of 2, as proposed in section \ref{states}. Another field
-for thought could be improvement of a learning system to dynamically adjust
-the parameters based on the results (for example, decrease the exploration if
-the learning system is doing well, and increase it otherwise). We have already
+table size by a factor of 2, as proposed in section \ref{states}. Another
+improvement of a learning system could be a dynamic adjustment of the
+parameters based on the results (for example, decrease the exploration if the
+learning system is doing well, and increase it otherwise). We have already
 produced all the tools needed to run such experiments, which can be found at
 our source code repository \cite{github}.
 
