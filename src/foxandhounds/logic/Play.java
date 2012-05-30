@@ -56,6 +56,37 @@ public class Play implements Runnable {
         foxTurn = !foxTurn;
     }
 
+    /**
+     * Moves a fox to given coordinate and makes hounds' move.
+     *
+     * @param coordinate coordinate to move the hounds, as 4 * row + column
+     */
+    public synchronized void step(int coordinate) {
+        if (foxTurn) {
+            State nextState = state.moveFox(new Coordinates(coordinate / 4,
+                                                            coordinate % 4));
+            for (State s : state.foxNeighbours(false)) {
+                if (s.equals(nextState)) {
+                    fox.move(state, nextState);
+                    if (nextState.isFinal()) {
+                        // update final Q-values and restart the game
+                        hounds.move(nextState);
+                        fox.move(nextState);
+                        state = fox.startGame();
+                    } else {
+                        state = hounds.move(nextState);
+                        if (state.isFinal()) {
+                            hounds.move(state);
+                            fox.move(state);
+                            state = fox.startGame();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
     public synchronized void start() {
         isRunning = true;
         notifyAll();

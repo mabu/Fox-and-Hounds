@@ -2,6 +2,8 @@ package foxandhounds.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.Button;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -18,7 +20,8 @@ import foxandhounds.logic.LearningSystem;
 import foxandhounds.logic.State;
 import foxandhounds.logic.Play;
 
-public class ControlPanel extends JPanel implements ActionListener {
+public class ControlPanel extends JPanel implements ActionListener,
+                                                    MouseListener {
     static private final double defaultExplRate = 0.1;
     static private final double defaultLearningRate = 0.1;
     static private final double defaultDiscountFactor = 0.99;
@@ -48,6 +51,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 
     public ControlPanel(BoardPanel boardPanel) {
         this.boardPanel = boardPanel;
+        boardPanel.init(this);
         setLayout(new GridBagLayout());
         stepButton.addActionListener(this);
         stopButton.addActionListener(this);
@@ -165,6 +169,17 @@ public class ControlPanel extends JPanel implements ActionListener {
             update();
         }
     }
+
+    public void mousePressed(MouseEvent e) {
+        setParameters();
+        play.step(Integer.parseInt(e.getComponent().getName()));
+        update();
+    }
+
+    public void mouseClicked(MouseEvent e) { }
+    public void mouseEntered(MouseEvent e) { }
+    public void mouseExited(MouseEvent e) { }
+    public void mouseReleased(MouseEvent e) { }
 
     static private GridBagConstraints constraints(int x, int y, int width) {
         GridBagConstraints gbc = new GridBagConstraints();

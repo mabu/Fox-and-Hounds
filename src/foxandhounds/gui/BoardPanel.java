@@ -11,19 +11,24 @@ public class BoardPanel extends JPanel {
     private Piece[] hounds = new Piece[4];
 
     public BoardPanel() {
+    }
+
+    public void init(ControlPanel controlPanel) {
         setLayout(new GridLayout(8, 8));
         for(int i = 0; i < 64; i++) {
             JPanel square = new JPanel();
             if ((i / 8 + i) % 2 == 1) {
                 square.setBackground(Color.BLACK);
+                square.setName(String.valueOf((63 - i) / 8 * 4 + i % 8 / 2));
+                square.addMouseListener(controlPanel);
             } else {
                 square.setBackground(Color.WHITE);
             }
             add(square);
         }
-        fox = new Piece("src/foxandhounds/Image/fox-icon.jpg");
+        fox = new Piece("fox-icon.jpg");
         for (int i = 0; i < 4; ++i) {
-            hounds[i] = new Piece("src/foxandhounds/Image/dog-icon.jpg");
+            hounds[i] = new Piece("dog-icon.jpg");
         }
     }
 

@@ -99,6 +99,43 @@ abstract public class LearningSystem implements Serializable, Cloneable {
     }
 
     /**
+     * Custom learning system execution.
+     * Updates Q-values of previous move. Moves to a given state.
+     *
+     * @param from current state before move
+     * @param to   the state to move to
+     * @return true, if the move was successful, or false if state to is not a
+     *         neighbour of state from
+     */
+    public synchronized boolean move(State from, State to) {
+        ++turns;
+        Vector<State> neighbours = neighbours(from);
+        int stateIndex = from.toInt();
+        if (!stateVisited[stateIndex]) {
+            stateVisited[stateIndex] = true;
+            ++statesVisited;
+        }
+        if (previousStateIndex >= 0) {
+            double delta = (discountFactor * max(qValues[stateIndex],
+                                                 neighbours.size())
+                            - qValues[previousStateIndex][lastAction]
+                            + reward(from)) * learningRate;
+            qValues[previousStateIndex][lastAction] += delta;
+        }
+        previousStateIndex = stateIndex;
+        for (lastAction = 0; lastAction < neighbours.size(); ++lastAction) {
+            if (neighbours.elementAt(lastAction).equals(to)) {
+                break;
+            }
+        }
+        if (lastAction == neighbours.size()) {
+            previousStateIndex = -1;
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns states reachable from a given state.
      *
      * @param state current state

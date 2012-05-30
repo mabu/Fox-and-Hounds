@@ -184,7 +184,7 @@ public class State {
      * @param coordinates where to move fox
      * @return a new state with fox moved to given coordinates
      */
-    private State moveFox(Coordinates coordinates) {
+    public State moveFox(Coordinates coordinates) {
         State state = new State(this);
         state.fox = coordinates;
         return state;
@@ -303,5 +303,14 @@ public class State {
             sum += hound.getRow();
         }
         return sum % 2 == 0;
+    }
+
+    public boolean equals(State state) {
+        for (int i = 0; i < 4; ++i) {
+            if (!hounds[i].equals(state.hounds[i])) {
+                return false;
+            }
+        }
+        return fox.equals(state.fox);
     }
 }

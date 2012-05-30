@@ -7,6 +7,8 @@ SOURCE  = \
 	LearningSystemInfo.java \
 	MainFrame.java \
 	Main.java \
+	dog-icon.jpg \
+	fox-icon.jpg \
 
 RMI_SOURCE =
 

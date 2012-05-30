@@ -7,17 +7,17 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 public class Piece extends JLabel {
-    private ImageIcon Icon;
+    private ImageIcon icon;
     private Color backGround;
 
-    public Piece(String NameIcon) {
-        Icon = new ImageIcon(NameIcon);
+    public Piece(String name) {
+        icon = new ImageIcon(getClass().getResource("/foxandhounds/gui/" + name));
         backGround = Color.BLACK;
-        this.setIcon(Icon);
+        setIcon(icon);
     }
 
     public ImageIcon returnImage() {
-        return Icon;
+        return icon;
     }
 
     public Color returnColor() {
