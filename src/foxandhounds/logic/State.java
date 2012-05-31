@@ -13,7 +13,7 @@ public class State {
      * row 7.
      */
 
-    public static final int NUM_STATES = 32 * 31 * 30 * 29 * 28 / 4 / 3 / 2 + 1;
+    public static final int NUM_STATES = 32 * 31 * 30 * 29 * 14 / 4 / 3 / 2 + 1;
 
     private Coordinates fox = null;
     private Coordinates[] hounds = new Coordinates[4];
@@ -279,14 +279,15 @@ public class State {
             return NUM_STATES - 1;
         }
         int intState = 0;
-        int foxCoordinate = fox.getRow() * 4 + fox.getColumn();
+        int foxCoordinate = fox.getRow() / 2 * 4 + fox.getColumn();
         for (int i = 0; i < 4; ++i) {
             intState += C[hounds[i].getRow() * 4 + hounds[i].getColumn()][i + 1];
-            if (fox.compareTo(hounds[i]) > 0) {
+            if (fox.compareTo(hounds[i]) > 0
+                && (fox.getRow() - hounds[i].getRow()) % 2 == 0) {
                 --foxCoordinate;
             }
         }
-        return intState * 28 + foxCoordinate;
+        return intState * 14 + foxCoordinate;
     }
 
     /**
