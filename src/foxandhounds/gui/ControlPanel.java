@@ -22,8 +22,8 @@ import foxandhounds.logic.Play;
 
 public class ControlPanel extends JPanel implements ActionListener,
                                                     MouseListener {
-    static private final double defaultExplRate = 0.1;
-    static private final double defaultLearningRate = 0.1;
+    static private final double defaultExplRate = 0.2;
+    static private final double defaultLearningRate = 0.5;
     static private final double defaultDiscountFactor = 0.99;
 
     private BoardPanel boardPanel;
