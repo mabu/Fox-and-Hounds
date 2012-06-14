@@ -92,8 +92,8 @@ hounds do not differ, the number of their positions is $C_{32}^4 = \frac{32
 \cdot 31 \cdot 30 \cdot 29}{4!} = 35960$. A fox can be in any of the remaining
 28 black squares, so the total number of states is $35960 \cdot 28 + 1 =
 1006881$. Here we added 1 because there is a special state when the fox is not
-yet on the board (as mentioned in the introduction, in the beginning the fox
-can choose any of the 4 squares in the row opposite from the hounds).
+yet on the board (as mentioned in the introduction, the fox can choose any of
+the 4 squares in the edge row opposite from the hounds).
 
 We have implemented the table as a two-dimensional array, where the index in
 one dimension represents a state and in the other -- the action. The state is
@@ -159,7 +159,7 @@ To run an experiment we repeat the following two phases:
         100,000 turns.
     \item {\em Evaluation phase.} Set learning rates to 0. Set the exploration
         rate of one system to 0, play 100 games and record the number of wins
-        of the other system. Then do the same evaluation of the other learning
+        of that system. Then do the same evaluation of the other learning
         system. Reset the learning rates and exploration rates to the initial
         values afterwards for the next training phase.
 \end{enumerate}
